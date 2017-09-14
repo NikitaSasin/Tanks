@@ -1,45 +1,65 @@
 function Map(canvas, context) {
-  this.canvas = canvas;
   this.context = context;
-  this.MAP_SIZE = 10;
+  this.canvas = canvas;
+  this.MAP_SIZE = 20;
   this.MAP_CELLSIZE = 24;
-  this.canvas.width = this.MAP_SIZE * this.MAP_CELLSIZE;
-  this.canvas.height = this.MAP_SIZE * this.MAP_CELLSIZE;
+  this.BORDER_SIZE = 60;
+
   this.mapWidth = this.MAP_SIZE * this.MAP_CELLSIZE;
   this.mapHeight = this.MAP_SIZE * this.MAP_CELLSIZE;
 
-  this.MAP_ARRAY = [
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1]
-  ];
+  this.canvas.width = this.mapWidth + this.BORDER_SIZE;
+  this.canvas.height = this.mapWidth + this.BORDER_SIZE;
 
-  this.imagesLoaded = 0;
+  this.mapPositionX = (this.canvas.width - this.mapWidth) / 2;
+  this.mapPositionY = (this.canvas.height - this.mapHeight) / 2;
+
+  this.MAP_ARRAY = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0],
+    [0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+    [0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+  ];
 
   this.imgBrick = new Image();
   this.imgBrick.src = 'img/brick.png';
-  self = this;
+  this.imgForest = new Image();
+  this.imgForest.src = 'img/forest.png';
+  this.imgWater = new Image();
+  this.imgWater.src = 'img/water.png';
+  this.imgSteel = new Image();
+  this.imgSteel.src = 'img/steel.png';
+  var self = this;
   this.imgBrick.onload = function () {
     self.draw();
   };
-
 }
 
 Map.prototype = (function () {
   var drawMap = function () {
-    console.log(this);
-    this.context.fillStyle = '#000';
-    this.context.fillRect(0, 0, this.mapWidth + 20, this.mapHeight + 20);
-
     this.context.fillStyle = '#808080';
-    this.context.fillRect(20, 20, this.mapWidth, this.mapHeight);
+    this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.context.fillStyle = '#000';
+    this.context.fillRect(this.mapPositionX, this.mapPositionY, this.mapWidth, this.mapHeight);
+
+    this.context.save();
 
     for (var i = 0; i < this.MAP_SIZE; i++) {
       for (var j = 0; j < this.MAP_SIZE; j++) {
@@ -47,13 +67,31 @@ Map.prototype = (function () {
           case 0:
             break;
           case 1:
-            this.context.drawImage(this.imgBrick, 20 + j * this.MAP_CELLSIZE, 20 + i * this.MAP_CELLSIZE, this.MAP_CELLSIZE, this.MAP_CELLSIZE);
+            this.context.drawImage(this.imgBrick, imgPositionX.call(this, j), imgPositionY.call(this, i), this.MAP_CELLSIZE, this.MAP_CELLSIZE);
+            break;
+          case 2:
+            this.context.drawImage(this.imgWater, imgPositionX.call(this, j), imgPositionY.call(this, i), this.MAP_CELLSIZE, this.MAP_CELLSIZE);
+            break;
+          case 3:
+            this.context.drawImage(this.imgForest, imgPositionX.call(this, j), imgPositionY.call(this, i), this.MAP_CELLSIZE, this.MAP_CELLSIZE);
+            break;
+          case 4:
+            this.context.drawImage(this.imgSteel, imgPositionX.call(this, j), imgPositionY.call(this, i), this.MAP_CELLSIZE, this.MAP_CELLSIZE);
             break;
           default:
             console.log('No value');
         }
       }
     }
+    this.context.restore();
+  };
+
+  var imgPositionX = function (index) {
+    return (this.MAP_CELLSIZE * index) + this.mapPositionX;
+  };
+
+  var imgPositionY = function (index) {
+    return (this.MAP_CELLSIZE * index) + this.mapPositionY;
   };
 
   return {
