@@ -7,7 +7,7 @@ function Map(canvas, context) {
 
   this.mapWidth = this.MAP_SIZE * this.MAP_CELLSIZE;
   this.mapHeight = this.MAP_SIZE * this.MAP_CELLSIZE;
-
+  
   this.canvas.width = this.mapWidth + this.BORDER_SIZE;
   this.canvas.height = this.mapWidth + this.BORDER_SIZE;
 
@@ -56,6 +56,7 @@ Map.prototype = (function () {
     this.context.fillStyle = '#808080';
     this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
+    this.context.clearRect(this.mapPositionX, this.mapPositionY, this.mapWidth, this.mapHeight);
     this.context.fillStyle = '#000';
     this.context.fillRect(this.mapPositionX, this.mapPositionY, this.mapWidth, this.mapHeight);
 
