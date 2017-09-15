@@ -31,39 +31,27 @@ Tank.prototype = (function () {
     this.context.drawImage(this.imgTank, this.tankDirection, 0, this.MAP_CELLSIZE * 2, this.MAP_CELLSIZE * 2, this.tankPositionX, this.tankPositionY, this.MAP_CELLSIZE, this.MAP_CELLSIZE);
   };
 
-  var setPositionX = function (direction) {
-    if (direction === 'right') {
+  var setPosition = function (direction) {
+    if (direction == 68) { //right
       this.tankPositionX += 4;
       this.tankDirection = 0;
     }
-    if (direction === 'left') {
+    if (direction == 65) { //left
       this.tankPositionX -= 4;
       this.tankDirection = this.MAP_CELLSIZE * 2;
     }
-  };
-
-  var setPositionY = function (direction) {
-    if (direction === 'up') {
+    if (direction == 87) {  // up
       this.tankPositionY -= 4;
       this.tankDirection = this.MAP_CELLSIZE * 4;
     }
-    if (direction === 'down') {
+    if (direction == 83) { //down
       this.tankPositionY += 4;
       this.tankDirection = this.MAP_CELLSIZE * 6;
     }
   };
 
-  var imgPositionX = function (index) {
-    return (this.MAP_CELLSIZE * index) + this.mapPositionX;
-  };
-
-  var imgPositionY = function (index) {
-    return (this.MAP_CELLSIZE * index) + this.mapPositionY;
-  };
-
   return {
     draw: draw,
-    setPositionX: setPositionX,
-    setPositionY: setPositionY
+    setPosition: setPosition
   };
 }());

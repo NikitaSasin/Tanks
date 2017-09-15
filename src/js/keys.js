@@ -1,4 +1,4 @@
-function Keys (canvas, context) {
+function Keys(canvas, context) {
   this.canvas = canvas;
   this.context = context;
   this.map = new Map(this.canvas, this.context);
@@ -9,48 +9,85 @@ function Keys (canvas, context) {
     down: 83,
     left: 65
   };
+  this.keysEvent = {};
   this.init(this);
 }
 
 Keys.prototype = (function () {
-  var init = function (self) {
+  var init = function () {
+    var self = this;
+
     window.addEventListener('keydown', function (e) {
-      console.log(e.keyCode);
+      console.log(self.keysEvent);
       switch (e.keyCode) {
         case self.keysCode.up:
-        setInterval(function() {
-          self.tank.setPositionY("up");
-          self.map.draw();
-          self.tank.draw();
-        }, 40)
+          onKeyDown.call(self, e.keyCode);
           break;
 
         case self.keysCode.right:
-          setInterval(function () {
-            self.tank.setPositionX("right");
-            self.map.draw();
-            self.tank.draw();
-          }, 40);
+          onKeyDown.call(self, e.keyCode);
           break;
 
         case self.keysCode.down:
-        setInterval(function () {
-          self.tank.setPositionY("down");
-          self.map.draw();
-          self.tank.draw();
-        }, 40);
+          onKeyDown.call(self, e.keyCode);
           break;
 
         case self.keysCode.left:
-          setInterval(function () {
-            self.tank.setPositionX("left");
-            self.map.draw();
-            self.tank.draw();
-          }, 40);
+          onKeyDown.call(self, e.keyCode);
           break;
+
+        default:
+          console.log('Unknown keydown event');
       }
     });
+    window.addEventListener('keyup', function (e) {
+      switch (e.keyCode) {
+        case self.keysCode.up:
+          onKeyUp.call(self, e.keyCode);
+          break;
+
+        case self.keysCode.right:
+          onKeyUp.call(self, e.keyCode);
+          break;
+
+        case self.keysCode.down:
+          onKeyUp.call(self, e.keyCode);
+          break;
+
+        case self.keysCode.left:
+          onKeyUp.call(self, e.keyCode);
+          break;
+
+        default:
+          console.log('Unknown keyup event');
+      }
+    });
+
+    setInterval(function () {
+      for (var event in self.keysEvent) {
+        if (self.keysEvent[event]) {
+          self.tank.setPosition(event);
+          self.map.draw();
+          self.tank.draw();
+        }
+      }
+    }, 40);
   };
+
+  var onKeyDown = function (keyCode) {
+    this.keysEvent[keyCode] = true;
+
+    for (var item in this.keysEvent) {
+      if (item != keyCode) {
+        this.keysEvent[item] = false;
+      }
+    }
+  };
+
+  var onKeyUp = function (keyCode) {
+    this.keysEvent[keyCode] = false;
+  }
+
   return {
     init: init
   };
