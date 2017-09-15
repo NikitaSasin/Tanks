@@ -10,7 +10,7 @@ function Keys(canvas, context) {
     left: 65
   };
   this.keysEvent = {};
-  this.init(this);
+  this.init();
 }
 
 Keys.prototype = (function () {
@@ -69,6 +69,7 @@ Keys.prototype = (function () {
           self.tank.setPosition(event);
           self.map.draw();
           self.tank.draw();
+
         }
       }
     }, 40);
@@ -88,7 +89,13 @@ Keys.prototype = (function () {
     this.keysEvent[keyCode] = false;
   }
 
+  var checkCollision = function () {
+    var blocks = this.map.getBlocks();
+    var tank = this.tank.getBorders();
+    
+  };
   return {
+    checkCollision: checkCollision,
     init: init
   };
 }());

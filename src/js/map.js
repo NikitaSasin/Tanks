@@ -7,7 +7,7 @@ function Map(canvas, context) {
 
   this.mapWidth = this.MAP_SIZE * this.MAP_CELLSIZE;
   this.mapHeight = this.MAP_SIZE * this.MAP_CELLSIZE;
-  
+
   this.canvas.width = this.mapWidth + this.BORDER_SIZE;
   this.canvas.height = this.mapWidth + this.BORDER_SIZE;
 
@@ -49,6 +49,46 @@ function Map(canvas, context) {
   this.imgBrick.onload = function () {
     self.draw();
   };
+
+  this.blocks = [];
+  for (var i = 0; i < this.MAP_ARRAY.length; i++) {
+    for (var j = 0; j < this.MAP_ARRAY.length; j++) {
+      switch (this.MAP_ARRAY[i][j]) {
+        case 0:
+          break;
+        case 1:
+          this.blocks.push({
+            img: this.imgBrick,
+            x: j * this.MAP_CELLSIZE + this.mapPositionX,
+            y: i * this.MAP_CELLSIZE + this.mapPositionY
+          })
+          break;
+        case 2:
+          this.blocks.push({
+            img: this.imgWater,
+            x: j * this.MAP_CELLSIZE + this.mapPositionX,
+            y: i * this.MAP_CELLSIZE + this.mapPositionY
+          })
+          break;
+        case 3:
+          this.blocks.push({
+            img: this.imgForest,
+            x: j * this.MAP_CELLSIZE + this.mapPositionX,
+            y: i * this.MAP_CELLSIZE + this.mapPositionY
+          })
+          break;
+        case 4:
+        this.blocks.push({
+            img: this.imgSteel,
+            x: j * this.MAP_CELLSIZE + this.mapPositionX,
+            y: i * this.MAP_CELLSIZE + this.mapPositionY
+          })
+          break;
+        default:
+          console.log('No value');
+      }
+    }
+  }
 }
 
 Map.prototype = (function () {
@@ -87,6 +127,19 @@ Map.prototype = (function () {
     this.context.restore();
   };
 
+  var getBlocks = function () {
+    return this.blocks;
+  };
+
+  var getBlockBorders = function (block) {
+    return {
+      top: block.y,
+      right: block.x + this.MAP_CELLSIZE,
+      bottom: block.y + this.MAP_CELLSIZE,
+      left: block.x
+    };
+  };
+
   var imgPositionX = function (index) {
     return (this.MAP_CELLSIZE * index) + this.mapPositionX;
   };
@@ -96,6 +149,8 @@ Map.prototype = (function () {
   };
 
   return {
-    draw: drawMap
+    draw: drawMap,
+    getBlocks: getBlocks,
+    getBlockBorders: getBlo
   };
 }());

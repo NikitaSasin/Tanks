@@ -50,8 +50,26 @@ Tank.prototype = (function () {
     }
   };
 
+  var getPostition = function () {
+    return {
+      x: this.tankPositionX,
+      y: this.tankPositionY
+    };
+  };
+
+  var getBorders = function () {
+    return {
+      top: this.tankPositionY,
+      right: this.tankPositionX + this.MAP_CELLSIZE,
+      bottom: this.tankPositionY + this.MAP_CELLSIZE,
+      left: this.tankPositionX
+    };
+  };
+
   return {
     draw: draw,
-    setPosition: setPosition
+    getPostition: getPostition,
+    setPosition: setPosition,
+    getBorders: getBorders
   };
 }());
