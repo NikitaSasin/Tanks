@@ -151,6 +151,6 @@ Map.prototype = (function () {
   return {
     draw: drawMap,
     getBlocks: getBlocks,
-    getBlockBorders: getBlo
+    getBlockBorders: getBlockBorders
   };
 }());

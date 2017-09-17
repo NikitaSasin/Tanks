@@ -18,7 +18,6 @@ Keys.prototype = (function () {
     var self = this;
 
     window.addEventListener('keydown', function (e) {
-      console.log(self.keysEvent);
       switch (e.keyCode) {
         case self.keysCode.up:
           onKeyDown.call(self, e.keyCode);
@@ -92,7 +91,7 @@ Keys.prototype = (function () {
   var checkCollision = function () {
     var blocks = this.map.getBlocks();
     var tank = this.tank.getBorders();
-    
+
   };
   return {
     checkCollision: checkCollision,

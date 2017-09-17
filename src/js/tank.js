@@ -21,9 +21,33 @@ function Tank(canvas, context) {
     self.draw();
   };
 
+  this.MAP_ARRAY = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0],
+    [0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+    [0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+  ];
+
   this.tankPositionX = this.mapPositionX;
   this.tankPositionY = this.mapPositionY;
   this.tankDirection = 0;
+  this.tankSpeed = 4;
 }
 
 Tank.prototype = (function () {
@@ -32,21 +56,91 @@ Tank.prototype = (function () {
   };
 
   var setPosition = function (direction) {
-    if (direction == 68) { //right
-      this.tankPositionX += 4;
+    if (direction == 68) {
+      if (this.tankPositionX <= this.mapWidth && intersection.call(this, direction) ) {
+        this.tankPositionX += this.tankSpeed;
+      }
       this.tankDirection = 0;
     }
-    if (direction == 65) { //left
-      this.tankPositionX -= 4;
+    // left
+    if (direction == 65) {
+      if (this.tankPositionX - this.tankSpeed >= this.mapPositionX && intersection.call(this, direction)) {
+        this.tankPositionX -= this.tankSpeed;
+      }
       this.tankDirection = this.MAP_CELLSIZE * 2;
     }
-    if (direction == 87) {  // up
-      this.tankPositionY -= 4;
+    // up
+    if (direction == 87) {
+      if (this.tankPositionY - this.tankSpeed >= this.mapPositionY && intersection.call(this, direction)) {
+        this.tankPositionY -= this.tankSpeed;
+      }
       this.tankDirection = this.MAP_CELLSIZE * 4;
     }
-    if (direction == 83) { //down
-      this.tankPositionY += 4;
+    // down
+    if (direction == 83) {
+      if (this.tankPositionY <= this.mapHeight && intersection.call(this, direction)) {
+        this.tankPositionY += this.tankSpeed;
+      }
       this.tankDirection = this.MAP_CELLSIZE * 6;
+    }
+  };
+
+  var intersection = function (direction) {
+    var nextCell;
+    var prevRow;
+    var nextRow;
+
+    // right
+    if (direction == 68) {
+       nextCell = Math.ceil((getBorders.call(this).right - this.mapPositionY + this.tankSpeed) / this.MAP_CELLSIZE);
+       prevRow = Math.floor((getBorders.call(this).top - this.mapPositionY) / this.MAP_CELLSIZE);
+       nextRow = Math.ceil((getBorders.call(this).top - this.mapPositionY) / this.MAP_CELLSIZE);
+
+      if (!this.MAP_ARRAY[prevRow][nextCell] &&
+          !this.MAP_ARRAY[nextRow][nextCell]) {
+        return true;
+      }
+
+      return false;
+    }
+    // left
+    if (direction == 65) {
+      nextCell = Math.floor((getBorders.call(this).right - this.mapPositionY - this.tankSpeed) / this.MAP_CELLSIZE);
+      prevRow = Math.floor((getBorders.call(this).top - this.mapPositionY) / this.MAP_CELLSIZE);
+      nextRow = Math.ceil((getBorders.call(this).top - this.mapPositionY) / this.MAP_CELLSIZE);
+
+     if (!this.MAP_ARRAY[prevRow][nextCell] &&
+         !this.MAP_ARRAY[nextRow][nextCell]) {
+       return true;
+     }
+
+     return false;
+    }
+    // up
+    if (direction == 87) {
+      nextCell = Math.floor((getBorders.call(this).top - this.mapPositionY - this.tankSpeed) / this.MAP_CELLSIZE);
+      prevRow = Math.floor((getBorders.call(this).right - this.mapPositionY) / this.MAP_CELLSIZE);
+      nextRow = Math.ceil((getBorders.call(this).right - this.mapPositionY) / this.MAP_CELLSIZE);
+
+     if (!this.MAP_ARRAY[nextCell][prevRow] &&
+         !this.MAP_ARRAY[nextCell][nextRow]) {
+       return true;
+     }
+
+     return false;
+    }
+    // down
+    if (direction == 83) {
+      nextCell = Math.ceil((getBorders.call(this).top - this.mapPositionY + this.tankSpeed) / this.MAP_CELLSIZE);
+      prevRow = Math.floor((getBorders.call(this).right - this.mapPositionY) / this.MAP_CELLSIZE);
+      nextRow = Math.ceil((getBorders.call(this).right - this.mapPositionY) / this.MAP_CELLSIZE);
+
+     if (!this.MAP_ARRAY[nextCell][prevRow] &&
+         !this.MAP_ARRAY[nextCell][nextRow]) {
+       return true;
+     }
+
+     return false;
     }
   };
 
@@ -60,9 +154,9 @@ Tank.prototype = (function () {
   var getBorders = function () {
     return {
       top: this.tankPositionY,
-      right: this.tankPositionX + this.MAP_CELLSIZE,
+      right: this.tankPositionX,
       bottom: this.tankPositionY + this.MAP_CELLSIZE,
-      left: this.tankPositionX
+      left: this.tankPositionX - this.MAP_CELLSIZE
     };
   };
 
