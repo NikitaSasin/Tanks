@@ -66,9 +66,8 @@ Keys.prototype = (function () {
       for (var event in self.keysEvent) {
         if (self.keysEvent[event]) {
           self.tank.setPosition(event);
-          self.map.draw();
-          self.tank.draw();
-
+          var ctx = self.map.draw(event);
+          self.tank.draw(ctx);
         }
       }
     }, 40);
@@ -86,15 +85,9 @@ Keys.prototype = (function () {
 
   var onKeyUp = function (keyCode) {
     this.keysEvent[keyCode] = false;
-  }
-
-  var checkCollision = function () {
-    var blocks = this.map.getBlocks();
-    var tank = this.tank.getBorders();
-
   };
+
   return {
-    checkCollision: checkCollision,
     init: init
   };
 }());
