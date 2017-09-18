@@ -57,6 +57,10 @@ Keys.prototype = (function () {
           onKeyDown.call(self, e.keyCode);
           break;
 
+        case self.keysCode.space:
+          bullets.push(new Bullet(self.context, self.tank.tankPositionX, self.tank.tankPositionY, self.tank.tankDirection));
+          break;
+
         default:
           console.log('Unknown keydown event');
       }
@@ -91,6 +95,12 @@ Keys.prototype = (function () {
       self.tank.setPosition(self.keysEvent);
       self.tank.draw();
       self.map.restoreContext();
+      if (bullets.length) {
+        for (var i = 0; i < bullets.length; i++) {
+          bullets[i].setPosition();
+          bullets[i].draw();
+        }
+      }
     }, 40);
   };
 
