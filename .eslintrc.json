@@ -2,6 +2,7 @@
   "extends": "airbnb-base/legacy",
   "rules": {
     "func-names": ["error", "never"],
+    "no-restricted-syntax": ["error", "never"],
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
   }
 }

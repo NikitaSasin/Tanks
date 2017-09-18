@@ -1,4 +1,6 @@
 function Map(canvas, context) {
+  var self = this;
+
   this.context = context;
   this.canvas = canvas;
   this.MAP_SIZE = 20;
@@ -9,9 +11,6 @@ function Map(canvas, context) {
 
   this.canvas.width = this.mapWidth;
   this.canvas.height = this.mapWidth;
-
-  this.mapPositionX = 0;
-  this.mapPositionY = 0;
 
   this.MAP_ARRAY = [
     [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -44,56 +43,58 @@ function Map(canvas, context) {
   this.imgWater.src = 'img/water.png';
   this.imgSteel = new Image();
   this.imgSteel.src = 'img/steel.png';
-  var self = this;
   this.imgBrick.onload = function () {
     self.draw();
   };
 }
 
 Map.prototype = (function () {
-  var drawMap = function (event) {
-    this.context.clearRect(0, 0, this.mapWidth, this.mapHeight);
-
-    this.context.save();
-
+  var draw = function () {
     for (var i = 0; i < this.MAP_SIZE; i++) {
       for (var j = 0; j < this.MAP_SIZE; j++) {
         switch (this.MAP_ARRAY[i][j]) {
           case 0:
             break;
           case 1:
-            this.context.drawImage(this.imgBrick, imgPositionX.call(this, j), imgPositionY.call(this, i), this.MAP_CELLSIZE, this.MAP_CELLSIZE);
+            this.context.drawImage(this.imgBrick, imgPosition.call(this, j), imgPosition.call(this, i), this.MAP_CELLSIZE, this.MAP_CELLSIZE);
             break;
           case 2:
-            this.context.drawImage(this.imgWater, imgPositionX.call(this, j), imgPositionY.call(this, i), this.MAP_CELLSIZE, this.MAP_CELLSIZE);
+            this.context.drawImage(this.imgWater, imgPosition.call(this, j), imgPosition.call(this, i), this.MAP_CELLSIZE, this.MAP_CELLSIZE);
             break;
           case 3:
-            this.context.drawImage(this.imgForest, imgPositionX.call(this, j), imgPositionY.call(this, i), this.MAP_CELLSIZE, this.MAP_CELLSIZE);
+            this.context.drawImage(this.imgForest, imgPosition.call(this, j), imgPosition.call(this, i), this.MAP_CELLSIZE, this.MAP_CELLSIZE);
             break;
           case 4:
-            this.context.drawImage(this.imgSteel, imgPositionX.call(this, j), imgPositionY.call(this, i), this.MAP_CELLSIZE, this.MAP_CELLSIZE);
+            this.context.drawImage(this.imgSteel, imgPosition.call(this, j), imgPosition.call(this, i), this.MAP_CELLSIZE, this.MAP_CELLSIZE);
             break;
           default:
             console.log('No value');
         }
       }
     }
-    if (event) {
-      this.context.globalCompositeOperation = 'destination-over';
-      return this.context;
-    }
+    this.context.globalCompositeOperation = 'destination-over';
+  };
+
+  var clearMap = function () {
+    this.context.clearRect(0, 0, this.mapWidth, this.mapHeight);
+  };
+
+  var saveContext = function () {
+    this.context.save();
+  };
+
+  var restoreContext = function () {
     this.context.restore();
-  };
+  }
 
-  var imgPositionX = function (index) {
-    return (this.MAP_CELLSIZE * index);
-  };
-
-  var imgPositionY = function (index) {
-    return (this.MAP_CELLSIZE * index);
+  var imgPosition = function (index) {
+    return this.MAP_CELLSIZE * index;
   };
 
   return {
-    draw: drawMap
+    draw: draw,
+    clearMap: clearMap,
+    saveContext: saveContext,
+    restoreContext: restoreContext
   };
 }());

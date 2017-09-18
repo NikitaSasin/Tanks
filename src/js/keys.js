@@ -7,15 +7,37 @@ function Keys(canvas, context) {
     up: 87,
     right: 68,
     down: 83,
-    left: 65
+    left: 65,
+    space: 32
   };
-  this.keysEvent = {};
+  this.keysEvent = {
+    87: false,
+    68: false,
+    83: false,
+    65: false
+  };
   this.init();
 }
 
 Keys.prototype = (function () {
+  var onKeyDown = function (keyCode) {
+    this.keysEvent[keyCode] = true;
+
+    for (var item in this.keysEvent) {
+      if (item != keyCode) {
+        this.keysEvent[item] = false;
+      }
+    }
+  };
+
+  var onKeyUp = function (keyCode) {
+    this.keysEvent[keyCode] = false;
+  };
+
   var init = function () {
     var self = this;
+    var bulletPos;
+    var bullets = [];
 
     window.addEventListener('keydown', function (e) {
       switch (e.keyCode) {
@@ -63,28 +85,13 @@ Keys.prototype = (function () {
     });
 
     setInterval(function () {
-      for (var event in self.keysEvent) {
-        if (self.keysEvent[event]) {
-          self.tank.setPosition(event);
-          var ctx = self.map.draw(event);
-          self.tank.draw(ctx);
-        }
-      }
+      self.map.clearMap();
+      self.map.saveContext();
+      self.map.draw();
+      self.tank.setPosition(self.keysEvent);
+      self.tank.draw();
+      self.map.restoreContext();
     }, 40);
-  };
-
-  var onKeyDown = function (keyCode) {
-    this.keysEvent[keyCode] = true;
-
-    for (var item in this.keysEvent) {
-      if (item != keyCode) {
-        this.keysEvent[item] = false;
-      }
-    }
-  };
-
-  var onKeyUp = function (keyCode) {
-    this.keysEvent[keyCode] = false;
   };
 
   return {

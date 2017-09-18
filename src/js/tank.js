@@ -47,39 +47,34 @@ function Tank(canvas, context) {
 }
 
 Tank.prototype = (function () {
-  var draw = function (ctx) {
-    if (ctx) {
-      ctx.drawImage(this.imgTank, this.tankDirection, 0, this.MAP_CELLSIZE * 2, this.MAP_CELLSIZE * 2, this.tankPositionX, this.tankPositionY, this.MAP_CELLSIZE, this.MAP_CELLSIZE);
-      ctx.restore();
-    } else {
-      this.context.drawImage(this.imgTank, this.tankDirection, 0, this.MAP_CELLSIZE * 2, this.MAP_CELLSIZE * 2, this.tankPositionX, this.tankPositionY, this.MAP_CELLSIZE, this.MAP_CELLSIZE);
-    }
+  var draw = function () {
+    this.context.drawImage(this.imgTank, this.tankDirection, 0, this.MAP_CELLSIZE * 2, this.MAP_CELLSIZE * 2, this.tankPositionX, this.tankPositionY, this.MAP_CELLSIZE, this.MAP_CELLSIZE);
   };
 
   var setPosition = function (direction) {
     // right
-    if (direction == 68) {
+    if (direction[68]) {
       if (getBorders.call(this).right < this.mapWidth && intersection.call(this, direction)) {
         this.tankPositionX += this.tankSpeed;
       }
       this.tankDirection = 0;
     }
     // left
-    if (direction == 65) {
+    if (direction[65]) {
       if (getBorders.call(this).left > 0 && intersection.call(this, direction)) {
         this.tankPositionX -= this.tankSpeed;
       }
       this.tankDirection = this.MAP_CELLSIZE * 2;
     }
     // up
-    if (direction == 87) {
+    if (direction[87]) {
       if (getBorders.call(this).top > 0 && intersection.call(this, direction)) {
         this.tankPositionY -= this.tankSpeed;
       }
       this.tankDirection = this.MAP_CELLSIZE * 4;
     }
     // down
-    if (direction == 83) {
+    if (direction[83]) {
       if (getBorders.call(this).bottom < this.mapHeight && intersection.call(this, direction)) {
         this.tankPositionY += this.tankSpeed;
       }
@@ -93,7 +88,7 @@ Tank.prototype = (function () {
     var nextRow;
 
     // right
-    if (direction == 68) {
+    if (direction[68]) {
        nextCell = Math.floor((getBorders.call(this).right + this.tankSpeed) / this.MAP_CELLSIZE);
        prevRow = Math.floor((getBorders.call(this).top) / this.MAP_CELLSIZE);
        nextRow = Math.ceil((getBorders.call(this).top) / this.MAP_CELLSIZE);
@@ -106,7 +101,7 @@ Tank.prototype = (function () {
       return false;
     }
     // left
-    if (direction == 65) {
+    if (direction[65]) {
       nextCell = Math.floor((getBorders.call(this).left - this.tankSpeed) / this.MAP_CELLSIZE);
       prevRow = Math.floor((getBorders.call(this).top) / this.MAP_CELLSIZE);
       nextRow = Math.ceil((getBorders.call(this).top) / this.MAP_CELLSIZE);
@@ -119,7 +114,7 @@ Tank.prototype = (function () {
      return false;
     }
     // up
-    if (direction == 87) {
+    if (direction[87]) {
       nextCell = Math.floor((getBorders.call(this).top - this.tankSpeed) / this.MAP_CELLSIZE);
       prevRow = Math.floor((getBorders.call(this).left) / this.MAP_CELLSIZE);
       nextRow = Math.ceil((getBorders.call(this).left) / this.MAP_CELLSIZE);
@@ -132,7 +127,7 @@ Tank.prototype = (function () {
      return false;
     }
     // down
-    if (direction == 83) {
+    if (direction[83]) {
       nextCell = Math.ceil((getBorders.call(this).top + this.tankSpeed) / this.MAP_CELLSIZE);
       prevRow = Math.floor((getBorders.call(this).left) / this.MAP_CELLSIZE);
       nextRow = Math.ceil((getBorders.call(this).left) / this.MAP_CELLSIZE);
