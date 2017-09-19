@@ -61,7 +61,6 @@ Keys.prototype = (function () {
           break;
 
         case self.keysCode.space:
-          console.log(self.tank.tankPositionX + ' ' + self.tank.tankPositionY);
           bullets.push(new Bullet(self.tank.tankPositionX, self.tank.tankPositionY, self.tank.tankDirection));
           break;
 
