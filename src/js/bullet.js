@@ -1,7 +1,8 @@
+var config = require('./config');
+
 function Bullet(context, x, y, direction) {
   var self = this;
-  this.MAP_CELLSIZE = 24;
-  this.context = context;
+
   this.width = 8;
   this.height = 8;
   this.x = x;
@@ -34,25 +35,29 @@ Bullet.prototype = (function () {
 
   var setStartPosition = function () {
     if (this.direction === 3) {
-      this.x += this.MAP_CELLSIZE;
-      this.y += (this.MAP_CELLSIZE / 2) - (this.height / 2);
+      this.x += config.MAP_CELLSIZE;
+      this.y += (config.MAP_CELLSIZE / 2) - (this.height / 2);
     }
     if (this.direction === 2) {
-      this.y += (this.MAP_CELLSIZE / 2) - (this.height / 2);
+      this.y += (config.MAP_CELLSIZE / 2) - (this.height / 2);
     }
     if (this.direction === 0) {
-      this.x += (this.MAP_CELLSIZE / 2) - (this.width / 2);
+      this.x += (config.MAP_CELLSIZE / 2) - (this.width / 2);
     }
     if (this.direction === 1) {
-      this.x += (this.MAP_CELLSIZE / 2) - (this.width / 2);
-      this.y += this.MAP_CELLSIZE;
+      this.x += (config.MAP_CELLSIZE / 2) - (this.width / 2);
+      this.y += config.MAP_CELLSIZE;
     }
   };
 
   var setPosition = function () {
     // right
     if (this.direction === 3) {
-      this.x += 7;
+      if (this.x < config.mapWidth) {
+        this.x += 7;
+      } else {
+        return false;
+      }
     }
     // left
     if (this.direction === 2) {
@@ -66,10 +71,11 @@ Bullet.prototype = (function () {
     if (this.direction === 1) {
       this.y += 7;
     }
+    return true;
   };
 
   var draw = function () {
-    this.context.drawImage(
+    config.context.drawImage(
       this.imgBullet,
       this.direction * 8,
       0,
@@ -89,3 +95,5 @@ Bullet.prototype = (function () {
     setDirection: setDirection,
   };
 }());
+
+module.exports = Bullet;

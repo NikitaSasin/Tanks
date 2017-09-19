@@ -1,9 +1,9 @@
-//= map
-//= tank
-//= keys
-//= bullet
-var canvas = document.getElementById('canvas');
-var context = canvas.getContext('2d');
-var map = new Map(canvas, context);
-var tank = new Tank(canvas, context);
-var keys = new Keys(canvas, context);
+var Map = require('./map');
+var Tank = require('./tank');
+var Keys = require('./keys');
+var Bullet = require('./bullet');
+var config = require('./config');
+
+new Map();
+new Tank();
+new Keys();

@@ -1,8 +1,11 @@
-function Keys(canvas, context) {
-  this.canvas = canvas;
-  this.context = context;
-  this.map = new Map(this.canvas, this.context);
-  this.tank = new Tank(this.canvas, this.context);
+var config = require('./config');
+var Map = require('./map');
+var Tank = require('./tank');
+var Bullet = require('./bullet');
+
+function Keys() {
+  this.map = new Map();
+  this.tank = new Tank();
   this.keysCode = {
     up: 87,
     right: 68,
@@ -58,7 +61,7 @@ Keys.prototype = (function () {
           break;
 
         case self.keysCode.space:
-          bullets.push(new Bullet(self.context, self.tank.tankPositionX, self.tank.tankPositionY, self.tank.tankDirection));
+          bullets.push(new Bullet(config.context, self.tank.tankPositionX, self.tank.tankPositionY, self.tank.tankDirection));
           break;
 
         default:
@@ -97,9 +100,15 @@ Keys.prototype = (function () {
       self.map.restoreContext();
       if (bullets.length) {
         for (var i = 0; i < bullets.length; i++) {
-          bullets[i].setPosition();
+          var check = bullets[i].setPosition();
+          if (!check) {
+            bullets.splice(i, 1);
+            console.log(bullets);
+            continue;
+          }
           bullets[i].draw();
         }
+
       }
     }, 40);
   };
@@ -108,3 +117,5 @@ Keys.prototype = (function () {
     init: init
   };
 }());
+
+module.exports = Keys;
