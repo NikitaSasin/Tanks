@@ -16,7 +16,17 @@ function Tank() {
 
 Tank.prototype = (function () {
   var draw = function () {
-    config.context.drawImage(this.imgTank, this.tankDirection, 0, config.MAP_CELLSIZE * 2, config.MAP_CELLSIZE * 2, this.tankPositionX, this.tankPositionY, config.MAP_CELLSIZE, config.MAP_CELLSIZE);
+    config.context.drawImage(
+      this.imgTank,
+      this.tankDirection,
+      0,
+      config.MAP_CELLSIZE * 2,
+      config.MAP_CELLSIZE * 2,
+      this.tankPositionX,
+      this.tankPositionY,
+      config.MAP_CELLSIZE,
+      config.MAP_CELLSIZE
+    );
   };
 
   var setPosition = function (direction) {
@@ -115,7 +125,7 @@ Tank.prototype = (function () {
       nextCell = Math.ceil((getBorders.call(this).top + this.tankSpeed) / config.MAP_CELLSIZE);
       prevRow = Math.floor((getBorders.call(this).left) / config.MAP_CELLSIZE);
       nextRow = Math.ceil((getBorders.call(this).left) / config.MAP_CELLSIZE);
-
+      console.log(nextCell + ' ' + prevRow + ' ' + nextRow);
       if ((config.MAP_ARRAY[nextCell][prevRow] !== 1 && config.MAP_ARRAY[nextCell][prevRow] !== 2 && config.MAP_ARRAY[nextCell][prevRow] !== 4) &&
           (config.MAP_ARRAY[nextCell][nextRow] !== 1 && config.MAP_ARRAY[nextCell][nextRow] !== 2 && config.MAP_ARRAY[nextCell][nextRow] !== 4)) {
         return true;

@@ -61,7 +61,8 @@ Keys.prototype = (function () {
           break;
 
         case self.keysCode.space:
-          bullets.push(new Bullet(config.context, self.tank.tankPositionX, self.tank.tankPositionY, self.tank.tankDirection));
+          console.log(self.tank.tankPositionX + ' ' + self.tank.tankPositionY);
+          bullets.push(new Bullet(self.tank.tankPositionX, self.tank.tankPositionY, self.tank.tankDirection));
           break;
 
         default:
@@ -100,15 +101,15 @@ Keys.prototype = (function () {
       self.map.restoreContext();
       if (bullets.length) {
         for (var i = 0; i < bullets.length; i++) {
-          var check = bullets[i].setPosition();
-          if (!check) {
+          if (!bullets[i].setPosition()) {
             bullets.splice(i, 1);
-            console.log(bullets);
-            continue;
+            i -= 1;
           }
-          bullets[i].draw();
-        }
+          else {
+            bullets[i].draw();
+          }
 
+        }
       }
     }, 40);
   };
