@@ -7,7 +7,7 @@ function Bullet(x, y, direction) {
   this.height = 8;
   this.direction = 0;
   this.speed = 7;
-  
+
   this.setDirection(direction);
   this.setStartPosition();
 }

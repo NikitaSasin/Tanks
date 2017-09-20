@@ -56,8 +56,6 @@ Tank.prototype = (function () {
       if (nextCell >= 0 && nextCell < mapSize) {
         return checkCells(nextCell, nextCell, prevRow, nextRow);
       }
-
-      return false;
     }
     // left
     if (event[this.directed.left]) {
@@ -68,8 +66,6 @@ Tank.prototype = (function () {
       if (nextCell >= 0 && nextCell < mapSize) {
         return checkCells(nextCell, nextCell, prevRow, nextRow);
       }
-
-      return false;
     }
     // up
     if (event[this.directed.up]) {
@@ -80,8 +76,6 @@ Tank.prototype = (function () {
       if (nextCell >= 0 && nextCell < mapSize) {
         return checkCells(prevRow, nextRow, nextCell, nextCell);
       }
-
-      return false;
     }
     // down
     if (event[this.directed.down]) {
@@ -92,9 +86,9 @@ Tank.prototype = (function () {
       if (nextCell >= 0 && nextCell < mapSize) {
         return checkCells(prevRow, nextRow, nextCell, nextCell);
       }
-
-      return false;
     }
+
+    return false;
   };
 
   var getPostition = function () {
@@ -102,6 +96,10 @@ Tank.prototype = (function () {
       x: this.x,
       y: this.y
     };
+  };
+
+  var getDirection = function () {
+    return this.direction;
   };
 
   var setPosition = function (event) {
@@ -140,6 +138,7 @@ Tank.prototype = (function () {
 
   return {
     getPostition: getPostition,
+    getDirection: getDirection,
     setPosition: setPosition,
     getBorders: getBorders
   };

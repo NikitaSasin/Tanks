@@ -1,5 +1,3 @@
-var Canvas = require('./canvas');
-var Tank = require('./tank');
-var Keys = require('./keys');
+var Game = require('./game');
 
-new Keys();
+new Game();

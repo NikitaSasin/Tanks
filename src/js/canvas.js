@@ -10,13 +10,14 @@ function Canvas() {
     bullet: null
   }
 
-  this.imagesCount = this.images.length;
+  this.imagesCount = Object.keys(this.images).length;
   this.imagesLoaded = 0;
-
+  
+  var self = this;
   for (var i in this.images) {
     var img = new Image();
     img.src = 'img/' + i + '.png';
-    img.onload = function () { ++this.imagesLoaded; };
+    img.onload = function () { ++self.imagesLoaded; };
     this.images[i] = img;
   }
 

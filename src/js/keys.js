@@ -1,18 +1,16 @@
 var config = require('./config');
-var Canvas = require('./canvas');
-var Tank = require('./tank');
-var Bullet = require('./bullet');
+var BulletFactory = require('./bulletFactory');
 
 function Keys() {
-  this.canvas = new Canvas();
-  this.tank = new Tank();
   this.keysCode = config.keysCode;
+  this.bulletCounter = 0;
   this.keysEvent = {
     87: false,
     68: false,
     83: false,
     65: false
   };
+
   this.init();
 }
 
@@ -31,9 +29,12 @@ Keys.prototype = (function () {
     this.keysEvent[keyCode] = false;
   };
 
+  var addBullet = function () {
+    this.bulletCounter += 1;
+  };
+
   var init = function () {
     var self = this;
-    var bullets = [];
 
     window.addEventListener('keydown', function (e) {
       switch (e.keyCode) {
@@ -54,13 +55,13 @@ Keys.prototype = (function () {
           break;
 
         case self.keysCode.space:
-          bullets.push(new Bullet(self.tank.x, self.tank.y, self.tank.direction));
+          addBullet.call(self);
           break;
 
         default:
-          console.log('Unknown keydown event');
       }
     });
+
     window.addEventListener('keyup', function (e) {
       switch (e.keyCode) {
         case self.keysCode.up:
@@ -80,28 +81,8 @@ Keys.prototype = (function () {
           break;
 
         default:
-          console.log('Unknown keyup event');
       }
     });
-
-    setInterval(function () {
-      self.canvas.clearMap();
-      self.canvas.saveContext();
-      self.canvas.drawMap();
-      self.tank.setPosition(self.keysEvent);
-      self.canvas.drawTank(self.tank.direction, self.tank.x, self.tank.y, self.tank.width, self.tank.height);
-      self.canvas.restoreContext();
-      if (bullets.length) {
-        for (var i = 0; i < bullets.length; i++) {
-          if (!bullets[i].setPosition()) {
-            bullets.splice(i, 1);
-            i -= 1;
-          } else {
-            self.canvas.drawBullet(bullets[i].direction, bullets[i].x, bullets[i].y, bullets[i].width, bullets[i].height);
-          }
-        }
-      }
-    }, 40);
   };
 
   return {
