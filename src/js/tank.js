@@ -1,7 +1,6 @@
 var config = require('./config');
 
 function Tank() {
-  var self = this;
   this.x = 0;
   this.y = 0;
   this.width = config.MAP_CELLSIZE;
@@ -9,31 +8,9 @@ function Tank() {
   this.direction = 0;
   this.directed = config.keysCode;
   this.speed = 4;
-  this.imgTank = new Image();
-  this.imgTank.src = 'img/tank.png';
-  this.imgTank.onload = function () {
-    self.draw();
-  };
 }
 
 Tank.prototype = (function () {
-  var draw = function () {
-    var cellSize = config.MAP_CELLSIZE;
-    var context = config.context;
-
-    context.drawImage(
-      this.imgTank,
-      this.direction,
-      0,
-      cellSize * 2,
-      cellSize * 2,
-      this.x,
-      this.y,
-      this.width,
-      this.height
-    );
-  };
-
   var getBorders = function () {
     return {
       top: this.y,
@@ -162,7 +139,6 @@ Tank.prototype = (function () {
   };
 
   return {
-    draw: draw,
     getPostition: getPostition,
     setPosition: setPosition,
     getBorders: getBorders

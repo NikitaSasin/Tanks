@@ -1,21 +1,15 @@
 var config = require('./config');
 
 function Bullet(x, y, direction) {
-  var self = this;
-
   this.x = x;
   this.y = y;
   this.width = 8;
   this.height = 8;
   this.direction = 0;
   this.speed = 7;
-  this.imgBullet = new Image();
-  this.imgBullet.src = 'img/bullet.png';
-
-  this.imgBullet.onload = function () {
-    self.setDirection(direction);
-    self.setStartPosition();
-  };
+  
+  this.setDirection(direction);
+  this.setStartPosition();
 }
 
 Bullet.prototype = (function () {
@@ -191,25 +185,7 @@ Bullet.prototype = (function () {
     return true;
   };
 
-  // вынести в canvas
-  var draw = function () {
-    config.context.globalCompositeOperation = 'source-over';
-
-    config.context.drawImage(
-      this.imgBullet,
-      this.direction * 8,
-      0,
-      this.width,
-      this.height,
-      this.x,
-      this.y,
-      this.width,
-      this.height
-    );
-  };
-
   return {
-    draw: draw,
     setStartPosition: setStartPosition,
     setPosition: setPosition,
     setDirection: setDirection

@@ -1,16 +1,18 @@
 var config = {};
 
-config.canvas = document.getElementById('canvas');
-config.context = config.canvas.getContext('2d');
-
 config.MAP_SIZE = 20;
 config.MAP_CELLSIZE = 24;
 
-config.mapWidth = config.MAP_SIZE * config.MAP_CELLSIZE;
-config.mapHeight = config.MAP_SIZE * config.MAP_CELLSIZE;
+config.MAP_WIDTH = config.MAP_SIZE * config.MAP_CELLSIZE;
+config.MAP_HEIGHT = config.MAP_SIZE * config.MAP_CELLSIZE;
 
-config.canvas.width = config.mapWidth;
-config.canvas.height = config.mapWidth;
+config.keysCode = {
+  up: 87,
+  right: 68,
+  down: 83,
+  left: 65,
+  space: 32
+};
 
 config.MAP_ARRAY = [
   [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
