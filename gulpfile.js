@@ -1,7 +1,8 @@
 'use strict';
 
 var gulp = require('gulp');
-var stylus = require('gulp-stylus')
+var webpack = require('gulp-webpack');
+var stylus = require('gulp-stylus');
 var watch = require('gulp-watch');
 var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
@@ -17,19 +18,19 @@ var path = {
     html: 'dist/',
     js: 'dist/js/',
     css: 'dist/css/',
-    img: 'dist/img/',
+    img: 'dist/img/'
   },
   src: {
     html: 'src/*.html',
     js: 'src/js/main.js',
     style: 'src/style/common.styl',
-    img: 'src/img/*.*',
+    img: 'src/img/*.*'
   },
   watch: {
     html: 'src/**/*.html',
     js: 'src/js/**/*.js',
     style: 'src/style/**/*.styl',
-    img: 'src/img/**/*.*',
+    img: 'src/img/**/*.*'
   },
   clean: './dist'
 };
@@ -44,15 +45,15 @@ var config = {
   logPrefix: 'sasin'
 };
 
-gulp.task('webserver', function() {
+gulp.task('webserver', function () {
   browserSync(config);
 });
 
-gulp.task('clean', function(cb) {
+gulp.task('clean', function (cb) {
   rimraf(path.clean, cb);
 });
 
-gulp.task('html:dist', function() {
+gulp.task('html:dist', function () {
   gulp.src(path.src.html)
     .pipe(rigger())
     .pipe(gulp.dest(path.dist.html))
@@ -61,9 +62,9 @@ gulp.task('html:dist', function() {
     }));
 });
 
-gulp.task('js:dist', function() {
+gulp.task('js:dist', function () {
   gulp.src(path.src.js)
-    .pipe(rigger())
+    .pipe(webpack(require('./webpack.config.js')))
     .pipe(sourcemaps.init())
     .pipe(sourcemaps.write())
     .pipe(gulp.dest(path.dist.js))
@@ -72,19 +73,19 @@ gulp.task('js:dist', function() {
     }));
 });
 
-gulp.task('style:dist', function() {
+gulp.task('style:dist', function () {
   gulp.src(path.src.style)
-  .pipe(sourcemaps.init())
-  .pipe(stylus())
-  .pipe(cssnano())
-  .pipe(sourcemaps.write())
-  .pipe(gulp.dest(path.dist.css))
-  .pipe(reload({
-    stream: true
-  }));
+    .pipe(sourcemaps.init())
+    .pipe(stylus())
+    .pipe(cssnano())
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(path.dist.css))
+    .pipe(reload({
+      stream: true
+    }));
 });
 
-gulp.task('img:dist', function() {
+gulp.task('img:dist', function () {
   gulp.src(path.src.img)
     .pipe(imagemin())
     .pipe(gulp.dest(path.dist.img))
@@ -100,17 +101,17 @@ gulp.task('dist', [
   'img:dist'
 ]);
 
-gulp.task('watch', function() {
-  watch([path.watch.html], function(event, cb) {
+gulp.task('watch', function () {
+  watch([path.watch.html], function () {
     gulp.start('html:dist');
   });
-  watch([path.watch.style], function(event, cb) {
+  watch([path.watch.style], function () {
     gulp.start('style:dist');
   });
-  watch([path.watch.js], function(event, cb) {
+  watch([path.watch.js], function () {
     gulp.start('js:dist');
   });
-  watch([path.watch.img], function(event, cb) {
+  watch([path.watch.img], function () {
     gulp.start('img:dist');
   });
 });

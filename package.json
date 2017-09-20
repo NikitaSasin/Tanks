@@ -29,6 +29,7 @@
     "gulp-sourcemap": "^1.0.1",
     "gulp-stylus": "^2.6.0",
     "gulp-uglify": "^3.0.0",
-    "gulp-watch": "^4.3.11"
+    "gulp-watch": "^4.3.11",
+    "gulp-webpack": "^1.5.0"
   }
 }
