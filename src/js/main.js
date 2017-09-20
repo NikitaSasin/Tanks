@@ -1,9 +1,5 @@
-var Map = require('./map');
+var Canvas = require('./canvas');
 var Tank = require('./tank');
 var Keys = require('./keys');
-var Bullet = require('./bullet');
-var config = require('./config');
 
-new Map();
-new Tank();
 new Keys();

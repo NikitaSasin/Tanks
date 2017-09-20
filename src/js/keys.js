@@ -1,10 +1,10 @@
 var config = require('./config');
-var Map = require('./map');
+var Canvas = require('./canvas');
 var Tank = require('./tank');
 var Bullet = require('./bullet');
 
 function Keys() {
-  this.map = new Map();
+  this.canvas = new Canvas();
   this.tank = new Tank();
   this.keysCode = config.keysCode;
   this.keysEvent = {
@@ -33,7 +33,6 @@ Keys.prototype = (function () {
 
   var init = function () {
     var self = this;
-    var bulletPos;
     var bullets = [];
 
     window.addEventListener('keydown', function (e) {
@@ -86,22 +85,20 @@ Keys.prototype = (function () {
     });
 
     setInterval(function () {
-      self.map.clearMap();
-      self.map.saveContext();
-      self.map.draw();
+      self.canvas.clearMap();
+      self.canvas.saveContext();
+      self.canvas.drawMap();
       self.tank.setPosition(self.keysEvent);
-      self.tank.draw();
-      self.map.restoreContext();
+      self.canvas.drawTank(self.tank.direction, self.tank.x, self.tank.y, self.tank.width, self.tank.height);
+      self.canvas.restoreContext();
       if (bullets.length) {
         for (var i = 0; i < bullets.length; i++) {
           if (!bullets[i].setPosition()) {
             bullets.splice(i, 1);
             i -= 1;
+          } else {
+            self.canvas.drawBullet(bullets[i].direction, bullets[i].x, bullets[i].y, bullets[i].width, bullets[i].height);
           }
-          else {
-            bullets[i].draw();
-          }
-
         }
       }
     }, 40);
