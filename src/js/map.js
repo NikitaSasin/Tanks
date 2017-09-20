@@ -16,32 +16,6 @@ function Map() {
 }
 
 Map.prototype = (function () {
-  var draw = function () {
-    for (var i = 0; i < config.MAP_SIZE; i++) {
-      for (var j = 0; j < config.MAP_SIZE; j++) {
-        switch (config.MAP_ARRAY[i][j]) {
-          case 0:
-            break;
-          case 1:
-            config.context.drawImage(this.imgBrick, imgPosition.call(this, j), imgPosition.call(this, i), config.MAP_CELLSIZE, config.MAP_CELLSIZE);
-            break;
-          case 2:
-            config.context.drawImage(this.imgWater, imgPosition.call(this, j), imgPosition.call(this, i), config.MAP_CELLSIZE, config.MAP_CELLSIZE);
-            break;
-          case 3:
-            config.context.drawImage(this.imgForest, imgPosition.call(this, j), imgPosition.call(this, i), config.MAP_CELLSIZE, config.MAP_CELLSIZE);
-            break;
-          case 4:
-            config.context.drawImage(this.imgSteel, imgPosition.call(this, j), imgPosition.call(this, i), config.MAP_CELLSIZE, config.MAP_CELLSIZE);
-            break;
-          default:
-            console.log('No value');
-        }
-      }
-    }
-    config.context.globalCompositeOperation = 'destination-over';
-  };
-
   var clearMap = function () {
     config.context.clearRect(0, 0, config.mapWidth, config.mapHeight);
   };
@@ -52,14 +26,59 @@ Map.prototype = (function () {
 
   var restoreContext = function () {
     config.context.restore();
-  }
+  };
 
   var imgPosition = function (index) {
     return config.MAP_CELLSIZE * index;
   };
 
+  var drawImg = function (image, i, j) {
+    var cellSize = config.MAP_CELLSIZE;
+    var context = config.context;
+    var getImgPosition = imgPosition;
+
+    context.drawImage(
+      image,
+      getImgPosition(j),
+      getImgPosition(i),
+      cellSize,
+      cellSize
+    );
+  };
+
+  var drawMap = function () {
+    var mapSize = config.MAP_SIZE;
+    var mapArray = config.MAP_ARRAY;
+    var drawImages = drawImg;
+
+    for (var i = 0; i < mapSize; i++) {
+      for (var j = 0; j < mapSize; j++) {
+        switch (mapArray[i][j]) {
+          case 0:
+            break;
+          case 1:
+            drawImages(this.imgBrick, i, j);
+            break;
+          case 2:
+            drawImages(this.imgWater, i, j);
+            break;
+          case 3:
+            drawImages(this.imgForest, i, j);
+            break;
+          case 4:
+            drawImages(this.imgSteel, i, j);
+            break;
+          default:
+            console.log('No value');
+            break;
+        }
+      }
+    }
+    config.context.globalCompositeOperation = 'destination-over';
+  };
+
   return {
-    draw: draw,
+    draw: drawMap,
     clearMap: clearMap,
     saveContext: saveContext,
     restoreContext: restoreContext

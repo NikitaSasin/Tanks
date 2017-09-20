@@ -6,13 +6,7 @@ var Bullet = require('./bullet');
 function Keys() {
   this.map = new Map();
   this.tank = new Tank();
-  this.keysCode = {
-    up: 87,
-    right: 68,
-    down: 83,
-    left: 65,
-    space: 32
-  };
+  this.keysCode = config.keysCode;
   this.keysEvent = {
     87: false,
     68: false,
@@ -61,7 +55,7 @@ Keys.prototype = (function () {
           break;
 
         case self.keysCode.space:
-          bullets.push(new Bullet(self.tank.tankPositionX, self.tank.tankPositionY, self.tank.tankDirection));
+          bullets.push(new Bullet(self.tank.x, self.tank.y, self.tank.direction));
           break;
 
         default:
