@@ -1,43 +1,41 @@
-var config = require('./config');
 var Canvas = require('./canvas');
 var Tank = require('./tank');
 var Keys = require('./keys');
-var Bullet = require('./bullet');
 var BulletFactory = require('./bulletFactory');
 
 function Game() {
   this.canvas = new Canvas();
   this.tank = new Tank();
-  this.keys = new Keys();
   this.bulletFactory = new BulletFactory();
+  this.keys = new Keys(this.bulletFactory);
 
   this.init();
 }
 
 Game.prototype = (function () {
   var init = function () {
-    var self = this;
+    var canvas = this.canvas;
+    var tank = this.tank;
+    var keys = this.keys;
+    var bulletFactory = this.bulletFactory;
+    var bullets = bulletFactory.bullets;
 
     setInterval(function () {
-      if (self.canvas.getProgress() === 100) {
-        self.canvas.clearMap();
-        self.canvas.saveContext();
-        self.canvas.drawMap();
-        self.tank.setPosition(self.keys.keysEvent);
-        self.canvas.drawTank(self.tank.direction, self.tank.x, self.tank.y, self.tank.width, self.tank.height);
-        if (self.bulletFactory.bullets.length) {
-          for (var i = 0; i < self.bulletFactory.bullets.length; i++) {
-            if (!self.bulletFactory.bullets[i].setPosition()) {
-              self.bulletFactory.bullets.splice(i, 1);
-              i -= 1;
-            } else {
-              self.canvas.drawBullet(self.bulletFactory.bullets[i].direction, self.bulletFactory.bullets[i].x, self.bulletFactory.bullets[i].y, self.bulletFactory.bullets[i].width, self.bulletFactory.bullets[i].height);
-            }
-          }
+      if (canvas.getProgress() === 100) {
+        canvas.clearMap();
+        canvas.saveContext();
+        canvas.drawMap();
+        tank.setPosition(keys.keysEvent);
+        canvas.drawTank(tank.direction, tank.x, tank.y, tank.width, tank.height);
+        if (bullets.length) {
+          bulletFactory.setBulletsPosition(tank.direction, tank.x, tank.y);
+          bullets.forEach(function (item) {
+            canvas.drawBullet(item.direction, item.x, item.y, item.width, item.height)
+          });
         }
-        self.canvas.restoreContext();
+        canvas.restoreContext();
       }
-    }, 40);
+    }, 20);
   };
 
   return {

@@ -1,9 +1,9 @@
 var config = require('./config');
-var BulletFactory = require('./bulletFactory');
 
-function Keys() {
+function Keys(bulletFactory) {
   this.keysCode = config.keysCode;
-  this.bulletCounter = 0;
+  this.bulletFactory = bulletFactory;
+  this.canStrike = true;
   this.keysEvent = {
     87: false,
     68: false,
@@ -30,12 +30,16 @@ Keys.prototype = (function () {
   };
 
   var addBullet = function () {
-    this.bulletCounter += 1;
+    var self = this;
+
+    setTimeout(function () {
+      self.bulletFactory.addNewBullet();
+    }, 100);
   };
 
   var init = function () {
     var self = this;
-
+    var keyDownInterval;
     window.addEventListener('keydown', function (e) {
       switch (e.keyCode) {
         case self.keysCode.up:
@@ -55,7 +59,17 @@ Keys.prototype = (function () {
           break;
 
         case self.keysCode.space:
-          addBullet.call(self);
+          if (self.canStrike) {
+            self.canStrike = false;
+
+            addBullet.call(self);
+            setTimeout(function () {
+              self.canStrike = true;
+            }, 200);
+          }
+          if (self.canStrike) {
+            keyDownInterval = setInterval(addBullet.call(self), 200);
+          }
           break;
 
         default:
@@ -78,6 +92,10 @@ Keys.prototype = (function () {
 
         case self.keysCode.left:
           onKeyUp.call(self, e.keyCode);
+          break;
+
+        case self.keysCode.space:
+          clearInterval(keyDownInterval);
           break;
 
         default:

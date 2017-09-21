@@ -1,50 +1,41 @@
 var config = require('./config');
 
-function Bullet(x, y, direction) {
-  this.x = x;
-  this.y = y;
+function Bullet() {
+  this.x = 0;
+  this.y = 0;
   this.width = 8;
   this.height = 8;
   this.direction = 0;
   this.speed = 7;
-
-  this.setDirection(direction);
-  this.setStartPosition();
+  this.hasStartPosition = false;
 }
 
 Bullet.prototype = (function () {
-  var setDirection = function (direction) {
-    if (direction === 96) {
-      this.direction = 0;
-    }
-    if (direction === 144) {
-      this.direction = 1;
+  var setStartPosition = function (direction, x, y) {
+    var mapCellSize = config.MAP_CELLSIZE;
+
+    if (direction === 0) {
+      this.direction = 3;
+      this.x = x + mapCellSize - this.width;
+      this.y = y + (mapCellSize / 2) - (this.height / 2);
     }
     if (direction === 48) {
       this.direction = 2;
+      this.x = x;
+      this.y = y + (mapCellSize / 2) - (this.height / 2);
     }
-    if (direction === 0) {
-      this.direction = 3;
+    if (direction === 96) {
+      this.direction = 0;
+      this.y = y;
+      this.x = x + (mapCellSize / 2) - (this.width / 2);
     }
-  };
-
-  var setStartPosition = function () {
-    var mapCellSize = config.MAP_CELLSIZE;
-
-    if (this.direction === 3) {
-      this.x += mapCellSize - this.width;
-      this.y += (mapCellSize / 2) - (this.height / 2);
+    if (direction === 144) {
+      this.direction = 1;
+      this.x = x + (mapCellSize / 2) - (this.width / 2);
+      this.y = y + mapCellSize - this.height;
     }
-    if (this.direction === 2) {
-      this.y += (mapCellSize / 2) - (this.height / 2);
-    }
-    if (this.direction === 0) {
-      this.x += (mapCellSize / 2) - (this.width / 2);
-    }
-    if (this.direction === 1) {
-      this.x += (mapCellSize / 2) - (this.width / 2);
-      this.y += mapCellSize - this.height;
-    }
+    this.hasStartPosition = true;
+    return true;
   };
 
   var getBorders = function () {
@@ -106,9 +97,8 @@ Bullet.prototype = (function () {
       if (nextCell >= 0 && nextCell < mapSize) {
         return checkCells(nextCell, nextCell, prevRow, nextRow);
       }
-
-      return false;
     }
+
     // left
     if (this.direction === 2) {
       nextCell = Math.floor((border.left - this.speed) / cellSize);
@@ -118,9 +108,8 @@ Bullet.prototype = (function () {
       if (nextCell >= 0 && nextCell < mapSize) {
         return checkCells(nextCell, nextCell, prevRow, nextRow);
       }
-
-      return false;
     }
+
     // up
     if (this.direction === 0) {
       nextCell = Math.floor((border.top - this.speed) / cellSize);
@@ -130,9 +119,8 @@ Bullet.prototype = (function () {
       if (nextCell >= 0 && nextCell < mapSize) {
         return checkCells(prevRow, nextRow, nextCell, nextCell);
       }
-
-      return false;
     }
+
     // down
     if (this.direction === 1) {
       nextCell = Math.floor((border.top + this.speed) / cellSize);
@@ -142,53 +130,55 @@ Bullet.prototype = (function () {
       if (nextCell >= 0 && nextCell < mapSize) {
         return checkCells(prevRow, nextRow, nextCell, nextCell);
       }
-
-      return false;
     }
+    return false;
   };
 
-  var setPosition = function () {
+  var setPosition = function (direction, x, y) {
     var hasNoIntersection = intersection.call(this);
 
-    // right
-    if (this.direction === 3) {
-      if (hasNoIntersection) {
-        this.x += this.speed;
-      } else {
-        return false;
+    if (this.hasStartPosition) {
+      // right
+      if (this.direction === 3) {
+        if (hasNoIntersection) {
+          this.x += this.speed;
+        } else {
+          return false;
+        }
       }
-    }
-    // left
-    if (this.direction === 2) {
-      if (hasNoIntersection) {
-        this.x -= this.speed;
-      } else {
-        return false;
+      // left
+      if (this.direction === 2) {
+        if (hasNoIntersection) {
+          this.x -= this.speed;
+        } else {
+          return false;
+        }
       }
-    }
-    // up
-    if (this.direction === 0) {
-      if (hasNoIntersection) {
-        this.y -= this.speed;
-      } else {
-        return false;
+      // up
+      if (this.direction === 0) {
+        if (hasNoIntersection) {
+          this.y -= this.speed;
+        } else {
+          return false;
+        }
       }
-    }
-    // down
-    if (this.direction === 1) {
-      if (hasNoIntersection) {
-        this.y += this.speed;
-      } else {
-        return false;
+      // down
+      if (this.direction === 1) {
+        if (hasNoIntersection) {
+          this.y += this.speed;
+        } else {
+          return false;
+        }
       }
+      return true;
     }
-    return true;
+
+    return setStartPosition.call(this, direction, x, y);
   };
 
   return {
     setStartPosition: setStartPosition,
-    setPosition: setPosition,
-    setDirection: setDirection
+    setPosition: setPosition
   };
 }());
 
