@@ -30,7 +30,7 @@ Game.prototype = (function () {
         if (bullets.length) {
           bulletFactory.setBulletsPosition(tank.direction, tank.x, tank.y);
           bullets.forEach(function (item) {
-            canvas.drawBullet(item.direction, item.x, item.y, item.width, item.height)
+            canvas.drawBullet(item.direction, item.x, item.y, item.width, item.height);
           });
         }
         canvas.restoreContext();

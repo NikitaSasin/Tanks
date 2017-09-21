@@ -3,11 +3,11 @@ var config = require('./config');
 function Tank() {
   this.x = 0;
   this.y = 0;
-  this.width = config.MAP_CELLSIZE;
-  this.height = config.MAP_CELLSIZE;
+  this.width = config.TANK_WIDTH;
+  this.height = config.TANK_HEIGHT;
+  this.directed = config.KEYS_CODE;
+  this.speed = config.TANK_SPEED;
   this.direction = 0;
-  this.directed = config.keysCode;
-  this.speed = 4;
 }
 
 Tank.prototype = (function () {
@@ -21,16 +21,18 @@ Tank.prototype = (function () {
   };
 
   var checkCells = function (prevCell, nextCell, prevRow, nextRow) {
+    var cellType = config.MAP_CELLTYPE;
+
     var prevRowCellValue = config.MAP_ARRAY[prevRow][prevCell];
     var nextRowCellValue = config.MAP_ARRAY[nextRow][nextCell];
 
-    var prevRowCheck = prevRowCellValue !== 1 &&
-                       prevRowCellValue !== 2 &&
-                       prevRowCellValue !== 4;
+    var prevRowCheck = prevRowCellValue !== cellType.brick &&
+                       prevRowCellValue !== cellType.water &&
+                       prevRowCellValue !== cellType.steel;
 
-    var nextRowCheck = nextRowCellValue !== 1 &&
-                       nextRowCellValue !== 2 &&
-                       nextRowCellValue !== 4;
+    var nextRowCheck = nextRowCellValue !== cellType.brick &&
+                       nextRowCellValue !== cellType.water &&
+                       nextRowCellValue !== cellType.steel;
 
     if (prevRowCheck && nextRowCheck) {
       return true;
@@ -91,19 +93,8 @@ Tank.prototype = (function () {
     return false;
   };
 
-  var getPostition = function () {
-    return {
-      x: this.x,
-      y: this.y
-    };
-  };
-
-  var getDirection = function () {
-    return this.direction;
-  };
-
   var setPosition = function (event) {
-    var cellSize = config.MAP_CELLSIZE;
+    var tankDirections = config.TANK_DIRECTIONS;
     var hasNoIntersection = intersection.call(this, event);
 
     // right
@@ -111,34 +102,32 @@ Tank.prototype = (function () {
       if (hasNoIntersection) {
         this.x += this.speed;
       }
-      this.direction = 0;
+      this.direction = tankDirections.right;
     }
     // left
     if (event[this.directed.left]) {
       if (hasNoIntersection) {
         this.x -= this.speed;
       }
-      this.direction = cellSize * 2;
+      this.direction = tankDirections.left;
     }
     // up
     if (event[this.directed.up]) {
       if (hasNoIntersection) {
         this.y -= this.speed;
       }
-      this.direction = cellSize * 4;
+      this.direction = tankDirections.up;
     }
     // down
     if (event[this.directed.down]) {
       if (hasNoIntersection) {
         this.y += this.speed;
       }
-      this.direction = cellSize * 6;
+      this.direction = tankDirections.bottom;
     }
   };
 
   return {
-    getPostition: getPostition,
-    getDirection: getDirection,
     setPosition: setPosition,
     getBorders: getBorders
   };

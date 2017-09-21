@@ -1,6 +1,10 @@
 var config = require('./config');
 
 function Canvas() {
+  this.canvas = document.getElementById('canvas');
+  this.context = this.canvas.getContext('2d');
+  this.canvas.width = config.MAP_WIDTH;
+  this.canvas.height = config.MAP_HEIGHT;
   this.images = {
     brick: null,
     forest: null,
@@ -8,26 +12,29 @@ function Canvas() {
     steel: null,
     tank: null,
     bullet: null
-  }
-
+  };
   this.imagesCount = Object.keys(this.images).length;
   this.imagesLoaded = 0;
-  
-  var self = this;
-  for (var i in this.images) {
-    var img = new Image();
-    img.src = 'img/' + i + '.png';
-    img.onload = function () { ++self.imagesLoaded; };
-    this.images[i] = img;
-  }
 
-  this.canvas = document.getElementById('canvas');
-  this.context = this.canvas.getContext('2d');
-  this.canvas.width = config.MAP_WIDTH;
-  this.canvas.height = config.MAP_HEIGHT;
+  this.loadImages();
 }
 
 Canvas.prototype = (function () {
+  var loadImages = function () {
+    var self = this;
+
+    for (var i in this.images) {
+      var img = new Image();
+      img.src = 'img/' + i + '.png';
+      img.onload = function () { ++self.imagesLoaded; };
+      this.images[i] = img;
+    }
+  };
+
+  var getProgress = function () {
+    return Math.floor((this.imagesLoaded / this.imagesCount) * 100);
+  };
+
   var clearMap = function () {
     this.context.clearRect(0, 0, config.MAP_WIDTH, config.MAP_HEIGHT);
   };
@@ -44,11 +51,6 @@ Canvas.prototype = (function () {
     return this.images[name];
   };
 
-  var getProgress = function () {
-    return Math.floor((this.imagesLoaded / this.imagesCount) * 100);
-  };
-
-  // поменять названия
   var imgPosition = function (index) {
     return config.MAP_CELLSIZE * index;
   };
@@ -66,10 +68,10 @@ Canvas.prototype = (function () {
     );
   };
 
-  // поменять названия
   var drawMap = function () {
     var mapSize = config.MAP_SIZE;
     var mapArray = config.MAP_ARRAY;
+    var cellType = config.MAP_CELLTYPE;
     var brick = getImage.call(this, 'brick');
     var water = getImage.call(this, 'water');
     var forest = getImage.call(this, 'forest');
@@ -78,20 +80,25 @@ Canvas.prototype = (function () {
     for (var i = 0; i < mapSize; i++) {
       for (var j = 0; j < mapSize; j++) {
         switch (mapArray[i][j]) {
-          case 0:
+          case cellType.empty:
             break;
-          case 1:
+
+          case cellType.brick:
             drawMapImg.call(this, brick, i, j);
             break;
-          case 2:
+
+          case cellType.water:
             drawMapImg.call(this, water, i, j);
             break;
-          case 3:
+
+          case cellType.forest:
             drawMapImg.call(this, forest, i, j);
             break;
-          case 4:
+
+          case cellType.steel:
             drawMapImg.call(this, steel, i, j);
             break;
+
           default:
             console.log('No value');
             break;
@@ -136,6 +143,7 @@ Canvas.prototype = (function () {
   };
 
   return {
+    loadImages: loadImages,
     clearMap: clearMap,
     saveContext: saveContext,
     restoreContext: restoreContext,

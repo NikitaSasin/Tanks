@@ -1,8 +1,7 @@
 var config = require('./config');
 
 function Keys(bulletFactory) {
-  this.keysCode = config.keysCode;
-  this.bulletFactory = bulletFactory;
+  this.keysCode = config.KEYS_CODE;
   this.canStrike = true;
   this.keysEvent = {
     87: false,
@@ -11,18 +10,24 @@ function Keys(bulletFactory) {
     65: false
   };
 
+  this.bulletFactory = bulletFactory;
+
   this.init();
 }
 
 Keys.prototype = (function () {
-  var onKeyDown = function (keyCode) {
-    this.keysEvent[keyCode] = true;
-
+  var deleteAnotherEvents = function (keyCode) {
     for (var item in this.keysEvent) {
-      if (item != keyCode) {
+      if (Number(item) !== keyCode) {
         this.keysEvent[item] = false;
       }
     }
+  };
+
+  var onKeyDown = function (keyCode) {
+    this.keysEvent[keyCode] = true;
+
+    deleteAnotherEvents.call(this, keyCode);
   };
 
   var onKeyUp = function (keyCode) {
@@ -30,16 +35,13 @@ Keys.prototype = (function () {
   };
 
   var addBullet = function () {
-    var self = this;
-
-    setTimeout(function () {
-      self.bulletFactory.addNewBullet();
-    }, 100);
+    this.bulletFactory.addNewBullet();
   };
 
   var init = function () {
     var self = this;
     var keyDownInterval;
+
     window.addEventListener('keydown', function (e) {
       switch (e.keyCode) {
         case self.keysCode.up:
@@ -61,8 +63,8 @@ Keys.prototype = (function () {
         case self.keysCode.space:
           if (self.canStrike) {
             self.canStrike = false;
-
             addBullet.call(self);
+
             setTimeout(function () {
               self.canStrike = true;
             }, 200);

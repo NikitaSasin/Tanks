@@ -28,7 +28,7 @@ BulletFactory.prototype = (function () {
   return {
     addNewBullet: addNewBullet,
     setBulletsPosition: setBulletsPosition
-  }
+  };
 }());
 
 module.exports = BulletFactory;
