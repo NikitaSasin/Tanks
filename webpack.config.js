@@ -2,24 +2,18 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
 
 module.exports = {
-  context: path.resolve(__dirname, 'src'),
-
   entry: {
-    main: './script/main.js',
+    main: './src/script/main.js',
   },
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: './dist',
     filename: '[name].js',
-  },
-
-  watch: true,
-
-  watchOptions: {
-    aggregateTimeout: 100,
   },
 
   devtool: 'inline-source-map',
@@ -56,19 +50,26 @@ module.exports = {
     },
     ],
   },
+
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
+    new CleanWebpackPlugin(['dist']),
+    new UglifyJSPlugin(),
     new ExtractTextPlugin('css/common.css'),
     new HtmlPlugin({
       filename: 'index.html',
-      template: './index.html',
+      template: './src/index.html',
     }),
+    new ImageminPlugin({
+      disable: process.env.NODE_ENV !== 'production',
+      pngquant: {
+        quality: '95-100',
+      },
+    }),
+    new webpack.HotModuleReplacementPlugin(),
   ],
 
   devServer: {
-    host: 'localhost',
-    port: 9000,
-    hot: true,
     contentBase: path.resolve(__dirname, 'dist'),
+    hot: true,
   },
 };
