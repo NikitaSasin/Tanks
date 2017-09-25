@@ -20,7 +20,7 @@ module.exports = {
 
   module: {
     rules: [{
-      test: /\.js?$/,
+      test: /\.es6$/,
       exclude: /node_modules/,
       loader: 'babel-loader',
     },
@@ -50,17 +50,18 @@ module.exports = {
     },
     ],
   },
-
+  resolve: {
+    extensions: ['.js', '.es6'],
+  },
   plugins: [
-    new CleanWebpackPlugin(['dist']),
     new UglifyJSPlugin(),
+    new CleanWebpackPlugin(['dist']),
     new ExtractTextPlugin('css/common.css'),
     new HtmlPlugin({
       filename: 'index.html',
       template: './src/index.html',
     }),
     new ImageminPlugin({
-      disable: process.env.NODE_ENV !== 'production',
       pngquant: {
         quality: '95-100',
       },

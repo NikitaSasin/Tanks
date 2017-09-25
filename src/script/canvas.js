@@ -1,116 +1,117 @@
-var config = require('./config');
+import config from './config';
 
-function Canvas() {
-  this.canvas = document.getElementById('canvas');
-  this.context = this.canvas.getContext('2d');
-  this.canvas.width = config.MAP_WIDTH;
-  this.canvas.height = config.MAP_HEIGHT;
-  this.images = {
-    brick: null,
-    forest: null,
-    water: null,
-    steel: null,
-    tank: null,
-    bullet: null
-  };
-  this.imagesCount = Object.keys(this.images).length;
-  this.imagesLoaded = 0;
+export default class Canvas {
+  constructor() {
+    this.canvas = document.getElementById('canvas');
+    this.context = this.canvas.getContext('2d');
+    this.canvas.width = config.MAP_WIDTH;
+    this.canvas.height = config.MAP_HEIGHT;
+    this.images = {
+      brick: null,
+      forest: null,
+      water: null,
+      steel: null,
+      tank: null,
+      bullet: null,
+    };
+    this.imagesCount = Object.keys(this.images).length;
+    this.imagesLoaded = 0;
 
-  this.loadImages();
-}
+    this.loadImages();
+  }
 
-Canvas.prototype = (function () {
-  var loadImages = function () {
-    var self = this;
+  loadImages() {
+    const self = this;
 
-    for (var i in this.images) {
-      var img = new Image();
-      img.src = 'img/' + i + '.png';
-      img.onload = function () { ++self.imagesLoaded; };
-      this.images[i] = img;
+    if (this.imagesCount) {
+      for (const i in this.images) {
+        const img = new Image();
+        img.src = `./img/${i}.png`;
+        img.onload = function () { self.imagesLoaded += 1; };
+        this.images[i] = img;
+      }
     }
-  };
+  }
 
-  var getProgress = function () {
+  getProgress() {
     return Math.floor((this.imagesLoaded / this.imagesCount) * 100);
-  };
+  }
 
-  var clearMap = function () {
+  clearMap() {
     this.context.clearRect(0, 0, config.MAP_WIDTH, config.MAP_HEIGHT);
-  };
+  }
 
-  var saveContext = function () {
+  saveContext() {
     this.context.save();
-  };
+  }
 
-  var restoreContext = function () {
+  restoreContext() {
     this.context.restore();
-  };
+  }
 
-  var getImage = function (name) {
+  getImage(name) {
     return this.images[name];
-  };
+  }
 
-  var imgPosition = function (index) {
+  static imgPosition(index) {
     return config.MAP_CELLSIZE * index;
-  };
+  }
 
-  var drawMapImg = function (image, i, j) {
-    var cellSize = config.MAP_CELLSIZE;
-    var getImgPosition = imgPosition;
+  drawMapImg(image, i, j) {
+    const cellSize = config.MAP_CELLSIZE;
+    const getImgPosition = Canvas.imgPosition;
 
     this.context.drawImage(
       image,
       getImgPosition(j),
       getImgPosition(i),
       cellSize,
-      cellSize
+      cellSize,
     );
-  };
+  }
 
-  var drawMap = function () {
-    var mapSize = config.MAP_SIZE;
-    var mapArray = config.MAP_ARRAY;
-    var cellType = config.MAP_CELLTYPE;
-    var brick = getImage.call(this, 'brick');
-    var water = getImage.call(this, 'water');
-    var forest = getImage.call(this, 'forest');
-    var steel = getImage.call(this, 'steel');
+  drawMap() {
+    const mapSize = config.MAP_SIZE;
+    const mapArray = config.MAP_ARRAY;
+    const cellType = config.MAP_CELLTYPE;
+    const brick = this.getImage('brick');
+    const water = this.getImage('water');
+    const forest = this.getImage('forest');
+    const steel = this.getImage('steel');
 
-    for (var i = 0; i < mapSize; i++) {
-      for (var j = 0; j < mapSize; j++) {
+    for (let i = 0; i < mapSize; i++) {
+      for (let j = 0; j < mapSize; j++) {
         switch (mapArray[i][j]) {
           case cellType.empty:
             break;
 
           case cellType.brick:
-            drawMapImg.call(this, brick, i, j);
+            this.drawMapImg(brick, i, j);
             break;
 
           case cellType.water:
-            drawMapImg.call(this, water, i, j);
+            this.drawMapImg(water, i, j);
             break;
 
           case cellType.forest:
-            drawMapImg.call(this, forest, i, j);
+            this.drawMapImg(forest, i, j);
             break;
 
           case cellType.steel:
-            drawMapImg.call(this, steel, i, j);
+            this.drawMapImg(steel, i, j);
             break;
 
           default:
-            console.log('No value');
             break;
         }
       }
     }
     this.context.globalCompositeOperation = 'destination-over';
-  };
+  }
 
-  var drawTank = function (direction, x, y, width, height) {
-    var cellSize = config.MAP_CELLSIZE;
-    var tank = getImage.call(this, 'tank');
+  drawTank(direction, x, y, width, height) {
+    const cellSize = config.MAP_CELLSIZE;
+    const tank = this.getImage('tank');
 
     this.context.drawImage(
       tank,
@@ -121,12 +122,12 @@ Canvas.prototype = (function () {
       x,
       y,
       width,
-      height
+      height,
     );
-  };
+  }
 
-  var drawBullet = function (direction, x, y, width, height) {
-    var bullet = getImage.call(this, 'bullet');
+  drawBullet(direction, x, y, width, height) {
+    const bullet = this.getImage('bullet');
     this.context.globalCompositeOperation = 'source-over';
 
     this.context.drawImage(
@@ -138,21 +139,7 @@ Canvas.prototype = (function () {
       x,
       y,
       width,
-      height
+      height,
     );
-  };
-
-  return {
-    loadImages: loadImages,
-    clearMap: clearMap,
-    saveContext: saveContext,
-    restoreContext: restoreContext,
-    getImage: getImage,
-    getProgress: getProgress,
-    drawMap: drawMap,
-    drawTank: drawTank,
-    drawBullet: drawBullet
-  };
-}());
-
-module.exports = Canvas;
+  }
+}

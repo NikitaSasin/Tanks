@@ -1,19 +1,19 @@
-var Bullet = require('./bullet');
+import Bullet from './bullet';
 
-function BulletFactory() {
-  this.bullets = [];
-}
+export default class bulletFactory {
+  constructor() {
+    this.bullets = [];
+  }
 
-BulletFactory.prototype = (function () {
-  var addNewBullet = function () {
+  addNewBullet() {
     this.bullets.push(new Bullet());
-  };
+  }
 
-  var setBulletsPosition = function (direction, x, y) {
-    var bullets = this.bullets;
+  setBulletsPosition(direction, x, y) {
+    const bullets = this.bullets;
 
     if (bullets.length) {
-      for (var i = 0; i < bullets.length; i++) {
+      for (let i = 0; i < bullets.length; i++) {
         if (!bullets[i].setPosition(direction, x, y)) {
           bullets.splice(i, 1);
           i -= 1;
@@ -23,12 +23,5 @@ BulletFactory.prototype = (function () {
     }
 
     return false;
-  };
-
-  return {
-    addNewBullet: addNewBullet,
-    setBulletsPosition: setBulletsPosition
-  };
-}());
-
-module.exports = BulletFactory;
+  }
+}

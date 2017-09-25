@@ -1,76 +1,76 @@
-var config = require('./config');
+import config from './config';
 
-function Keys(bulletFactory) {
-  this.keysCode = config.KEYS_CODE;
-  this.canStrike = true;
-  this.keysEvent = {
-    87: false,
-    68: false,
-    83: false,
-    65: false
-  };
+export default class Keys {
+  constructor(bulletFactory) {
+    this.keysCode = config.KEYS_CODE;
+    this.canStrike = true;
+    this.keysEvent = {
+      87: false,
+      68: false,
+      83: false,
+      65: false,
+    };
 
-  this.bulletFactory = bulletFactory;
+    this.bulletFactory = bulletFactory;
 
-  this.init();
-}
+    this.init();
+  }
 
-Keys.prototype = (function () {
-  var deleteAnotherEvents = function (keyCode) {
-    for (var item in this.keysEvent) {
+  deleteAnotherEvents(keyCode) {
+    for (const item in this.keysEvent) {
       if (Number(item) !== keyCode) {
         this.keysEvent[item] = false;
       }
     }
-  };
+  }
 
-  var onKeyDown = function (keyCode) {
+  onKeyDown(keyCode) {
     this.keysEvent[keyCode] = true;
 
-    deleteAnotherEvents.call(this, keyCode);
-  };
+    this.deleteAnotherEvents(keyCode);
+  }
 
-  var onKeyUp = function (keyCode) {
+  onKeyUp(keyCode) {
     this.keysEvent[keyCode] = false;
-  };
+  }
 
-  var addBullet = function () {
+  addBullet() {
     this.bulletFactory.addNewBullet();
-  };
+  }
 
-  var init = function () {
-    var self = this;
-    var keyDownInterval;
+  init() {
+    const self = this;
+    let keyDownInterval;
 
-    window.addEventListener('keydown', function (e) {
+    window.addEventListener('keydown', (e) => {
       switch (e.keyCode) {
         case self.keysCode.up:
-          onKeyDown.call(self, e.keyCode);
+          self.onKeyDown(e.keyCode);
           break;
 
         case self.keysCode.right:
-          onKeyDown.call(self, e.keyCode);
+          self.onKeyDown(e.keyCode);
           break;
 
         case self.keysCode.down:
-          onKeyDown.call(self, e.keyCode);
+          self.onKeyDown(e.keyCode);
           break;
 
         case self.keysCode.left:
-          onKeyDown.call(self, e.keyCode);
+          self.onKeyDown(e.keyCode);
           break;
 
         case self.keysCode.space:
           if (self.canStrike) {
             self.canStrike = false;
-            addBullet.call(self);
+            self.addBullet();
 
-            setTimeout(function () {
+            setTimeout(() => {
               self.canStrike = true;
             }, 200);
           }
           if (self.canStrike) {
-            keyDownInterval = setInterval(addBullet.call(self), 200);
+            keyDownInterval = setInterval(self.addBullet, 200);
           }
           break;
 
@@ -78,22 +78,22 @@ Keys.prototype = (function () {
       }
     });
 
-    window.addEventListener('keyup', function (e) {
+    window.addEventListener('keyup', (e) => {
       switch (e.keyCode) {
         case self.keysCode.up:
-          onKeyUp.call(self, e.keyCode);
+          self.onKeyUp(e.keyCode);
           break;
 
         case self.keysCode.right:
-          onKeyUp.call(self, e.keyCode);
+          self.onKeyUp(e.keyCode);
           break;
 
         case self.keysCode.down:
-          onKeyUp.call(self, e.keyCode);
+          self.onKeyUp(e.keyCode);
           break;
 
         case self.keysCode.left:
-          onKeyUp.call(self, e.keyCode);
+          self.onKeyUp(e.keyCode);
           break;
 
         case self.keysCode.space:
@@ -103,11 +103,5 @@ Keys.prototype = (function () {
         default:
       }
     });
-  };
-
-  return {
-    init: init
-  };
-}());
-
-module.exports = Keys;
+  }
+}

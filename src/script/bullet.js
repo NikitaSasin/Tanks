@@ -1,28 +1,28 @@
-var config = require('./config');
+import config from './config';
 
-function Bullet() {
-  this.x = 0;
-  this.y = 0;
-  this.width = config.BULLET_WIDTH;
-  this.height = config.BULLET_HEIGHT;
-  this.speed = config.BULLET_SPEED;
-  this.direction = 0;
-  this.directed = {
-    right: 3,
-    left: 2,
-    up: 0,
-    bottom: 1
-  };
-  this.hasStartPosition = false;
-}
+export default class Bullet {
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+    this.width = config.BULLET_WIDTH;
+    this.height = config.BULLET_HEIGHT;
+    this.speed = config.BULLET_SPEED;
+    this.direction = 0;
+    this.directed = {
+      right: 3,
+      left: 2,
+      up: 0,
+      bottom: 1,
+    };
+    this.hasStartPosition = false;
+  }
 
-Bullet.prototype = (function () {
-  var setStartPosition = function (direction, x, y) {
-    var mapCellSize = config.MAP_CELLSIZE;
-    var tankDirection = config.TANK_DIRECTIONS;
-    var middleOfCell = {
+  setStartPosition(direction, x, y) {
+    const mapCellSize = config.MAP_CELLSIZE;
+    const tankDirection = config.TANK_DIRECTIONS;
+    const middleOfCell = {
       x: (mapCellSize / 2) - (this.width / 2),
-      y: (mapCellSize / 2) - (this.height / 2)
+      y: (mapCellSize / 2) - (this.height / 2),
     };
 
     // right
@@ -55,30 +55,30 @@ Bullet.prototype = (function () {
 
     this.hasStartPosition = true;
     return true;
-  };
+  }
 
-  var getBorders = function () {
+  getBorders() {
     return {
       top: this.y,
       right: this.x + this.width,
       bottom: this.y + this.height,
-      left: this.x
+      left: this.x,
     };
-  };
+  }
 
-  var checkCells = function (prevCell, nextCell, prevRow, nextRow) {
-    var cellType = config.MAP_CELLTYPE;
+  static checkCells(prevCell, nextCell, prevRow, nextRow) {
+    const cellType = config.MAP_CELLTYPE;
 
-    var prevRowCellValue = config.MAP_ARRAY[prevRow][prevCell];
-    var nextRowCellValue = config.MAP_ARRAY[nextRow][nextCell];
+    const prevRowCellValue = config.MAP_ARRAY[prevRow][prevCell];
+    const nextRowCellValue = config.MAP_ARRAY[nextRow][nextCell];
 
-    var prevRowCheck = prevRowCellValue !== cellType.empty &&
-                       prevRowCellValue !== cellType.water &&
-                       prevRowCellValue !== cellType.forest;
+    const prevRowCheck = prevRowCellValue !== cellType.empty &&
+                         prevRowCellValue !== cellType.water &&
+                         prevRowCellValue !== cellType.forest;
 
-    var nextRowCheck = nextRowCellValue !== cellType.empty &&
-                       nextRowCellValue !== cellType.water &&
-                       nextRowCellValue !== cellType.forest;
+    const nextRowCheck = nextRowCellValue !== cellType.empty &&
+                         nextRowCellValue !== cellType.water &&
+                         nextRowCellValue !== cellType.forest;
 
     if (prevRowCheck) {
       config.MAP_ARRAY[prevRow][prevCell] = cellType.empty;
@@ -99,15 +99,15 @@ Bullet.prototype = (function () {
     }
 
     return true;
-  };
+  }
 
-  var intersection = function () {
-    var nextCell;
-    var prevRow;
-    var nextRow;
-    var mapSize = config.MAP_SIZE;
-    var cellSize = config.MAP_CELLSIZE;
-    var border = getBorders.call(this);
+  intersection() {
+    let nextCell;
+    let prevRow;
+    let nextRow;
+    const mapSize = config.MAP_SIZE;
+    const cellSize = config.MAP_CELLSIZE;
+    const border = this.getBorders();
 
     // right
     if (this.direction === this.directed.right) {
@@ -116,7 +116,7 @@ Bullet.prototype = (function () {
       nextRow = Math.floor((border.bottom) / cellSize);
 
       if (nextCell >= 0 && nextCell < mapSize) {
-        return checkCells(nextCell, nextCell, prevRow, nextRow);
+        return Bullet.checkCells(nextCell, nextCell, prevRow, nextRow);
       }
     }
 
@@ -127,7 +127,7 @@ Bullet.prototype = (function () {
       nextRow = Math.floor((border.bottom) / cellSize);
 
       if (nextCell >= 0 && nextCell < mapSize) {
-        return checkCells(nextCell, nextCell, prevRow, nextRow);
+        return Bullet.checkCells(nextCell, nextCell, prevRow, nextRow);
       }
     }
 
@@ -138,7 +138,7 @@ Bullet.prototype = (function () {
       nextRow = Math.floor((border.right) / cellSize);
 
       if (nextCell >= 0 && nextCell < mapSize) {
-        return checkCells(prevRow, nextRow, nextCell, nextCell);
+        return Bullet.checkCells(prevRow, nextRow, nextCell, nextCell);
       }
     }
 
@@ -149,14 +149,14 @@ Bullet.prototype = (function () {
       nextRow = Math.floor((border.right) / cellSize);
 
       if (nextCell >= 0 && nextCell < mapSize) {
-        return checkCells(prevRow, nextRow, nextCell, nextCell);
+        return Bullet.checkCells(prevRow, nextRow, nextCell, nextCell);
       }
     }
     return false;
-  };
+  }
 
-  var setPosition = function (direction, x, y) {
-    var hasNoIntersection = intersection.call(this);
+  setPosition(direction, x, y) {
+    const hasNoIntersection = this.intersection();
 
     if (this.hasStartPosition) {
       // right
@@ -198,12 +198,6 @@ Bullet.prototype = (function () {
       return true;
     }
 
-    return setStartPosition.call(this, direction, x, y);
-  };
-
-  return {
-    setPosition: setPosition
-  };
-}());
-
-module.exports = Bullet;
+    return this.setStartPosition(direction, x, y);
+  }
+}

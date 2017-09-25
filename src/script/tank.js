@@ -1,53 +1,53 @@
-var config = require('./config');
+import config from './config';
 
-function Tank() {
-  this.x = 0;
-  this.y = 0;
-  this.width = config.TANK_WIDTH;
-  this.height = config.TANK_HEIGHT;
-  this.directed = config.KEYS_CODE;
-  this.speed = config.TANK_SPEED;
-  this.direction = 0;
-}
+export default class Tank {
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+    this.width = config.TANK_WIDTH;
+    this.height = config.TANK_HEIGHT;
+    this.directed = config.KEYS_CODE;
+    this.speed = config.TANK_SPEED;
+    this.direction = 0;
+  }
 
-Tank.prototype = (function () {
-  var getBorders = function () {
+  getBorders() {
     return {
       top: this.y,
       right: this.x + this.width,
       bottom: this.y + this.height,
-      left: this.x
+      left: this.x,
     };
-  };
+  }
 
-  var checkCells = function (prevCell, nextCell, prevRow, nextRow) {
-    var cellType = config.MAP_CELLTYPE;
+  static checkCells(prevCell, nextCell, prevRow, nextRow) {
+    const cellType = config.MAP_CELLTYPE;
 
-    var prevRowCellValue = config.MAP_ARRAY[prevRow][prevCell];
-    var nextRowCellValue = config.MAP_ARRAY[nextRow][nextCell];
+    const prevRowCellValue = config.MAP_ARRAY[prevRow][prevCell];
+    const nextRowCellValue = config.MAP_ARRAY[nextRow][nextCell];
 
-    var prevRowCheck = prevRowCellValue !== cellType.brick &&
-                       prevRowCellValue !== cellType.water &&
-                       prevRowCellValue !== cellType.steel;
+    const prevRowCheck = prevRowCellValue !== cellType.brick &&
+                         prevRowCellValue !== cellType.water &&
+                         prevRowCellValue !== cellType.steel;
 
-    var nextRowCheck = nextRowCellValue !== cellType.brick &&
-                       nextRowCellValue !== cellType.water &&
-                       nextRowCellValue !== cellType.steel;
+    const nextRowCheck = nextRowCellValue !== cellType.brick &&
+                         nextRowCellValue !== cellType.water &&
+                         nextRowCellValue !== cellType.steel;
 
     if (prevRowCheck && nextRowCheck) {
       return true;
     }
 
     return false;
-  };
+  }
 
-  var intersection = function (event) {
-    var nextCell;
-    var prevRow;
-    var nextRow;
-    var mapSize = config.MAP_SIZE;
-    var cellSize = config.MAP_CELLSIZE;
-    var border = getBorders.call(this);
+  intersection(event) {
+    let nextCell;
+    let prevRow;
+    let nextRow;
+    const mapSize = config.MAP_SIZE;
+    const cellSize = config.MAP_CELLSIZE;
+    const border = this.getBorders();
 
     // right
     if (event[this.directed.right]) {
@@ -56,7 +56,7 @@ Tank.prototype = (function () {
       nextRow = Math.ceil((border.top) / cellSize);
 
       if (nextCell >= 0 && nextCell < mapSize) {
-        return checkCells(nextCell, nextCell, prevRow, nextRow);
+        return Tank.checkCells(nextCell, nextCell, prevRow, nextRow);
       }
     }
     // left
@@ -66,7 +66,7 @@ Tank.prototype = (function () {
       nextRow = Math.ceil((border.top) / cellSize);
 
       if (nextCell >= 0 && nextCell < mapSize) {
-        return checkCells(nextCell, nextCell, prevRow, nextRow);
+        return Tank.checkCells(nextCell, nextCell, prevRow, nextRow);
       }
     }
     // up
@@ -76,7 +76,7 @@ Tank.prototype = (function () {
       nextRow = Math.ceil((border.left) / cellSize);
 
       if (nextCell >= 0 && nextCell < mapSize) {
-        return checkCells(prevRow, nextRow, nextCell, nextCell);
+        return Tank.checkCells(prevRow, nextRow, nextCell, nextCell);
       }
     }
     // down
@@ -86,16 +86,16 @@ Tank.prototype = (function () {
       nextRow = Math.ceil((border.left) / cellSize);
 
       if (nextCell >= 0 && nextCell < mapSize) {
-        return checkCells(prevRow, nextRow, nextCell, nextCell);
+        return Tank.checkCells(prevRow, nextRow, nextCell, nextCell);
       }
     }
 
     return false;
-  };
+  }
 
-  var setPosition = function (event) {
-    var tankDirections = config.TANK_DIRECTIONS;
-    var hasNoIntersection = intersection.call(this, event);
+  setPosition(event) {
+    const tankDirections = config.TANK_DIRECTIONS;
+    const hasNoIntersection = this.intersection(event);
 
     // right
     if (event[this.directed.right]) {
@@ -125,12 +125,5 @@ Tank.prototype = (function () {
       }
       this.direction = tankDirections.bottom;
     }
-  };
-
-  return {
-    setPosition: setPosition,
-    getBorders: getBorders
-  };
-}());
-
-module.exports = Tank;
+  }
+}
