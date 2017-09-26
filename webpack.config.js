@@ -54,7 +54,6 @@ module.exports = {
     extensions: ['.js', '.es6'],
   },
   plugins: [
-    new UglifyJSPlugin(),
     new CleanWebpackPlugin(['dist']),
     new ExtractTextPlugin('css/common.css'),
     new HtmlPlugin({

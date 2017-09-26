@@ -10,7 +10,18 @@ export default class Keys {
       83: false,
       65: false,
     };
-
+    this.handleEvent = function (e) {
+      switch (e.type) {
+        case 'keydown':
+          this.keyDownListener(e);
+          break;
+        case 'keyup':
+          this.keyUpListener(e);
+          break;
+        default:
+      }
+    };
+    this.keyDownInterval;
     this.bulletFactory = bulletFactory;
 
     this.init();
@@ -26,7 +37,6 @@ export default class Keys {
 
   onKeyDown(keyCode) {
     this.keysEvent[keyCode] = true;
-
     this.deleteAnotherEvents(keyCode);
   }
 
@@ -38,70 +48,74 @@ export default class Keys {
     this.bulletFactory.addNewBullet();
   }
 
+  keyDownListener(e) {
+    switch (e.keyCode) {
+      case this.keysCode.up:
+        this.onKeyDown(e.keyCode);
+        break;
+
+      case this.keysCode.right:
+        this.onKeyDown(e.keyCode);
+        break;
+
+      case this.keysCode.down:
+        this.onKeyDown(e.keyCode);
+        break;
+
+      case this.keysCode.left:
+        this.onKeyDown(e.keyCode);
+        break;
+
+      case this.keysCode.space:
+        if (this.canStrike) {
+          this.canStrike = false;
+          this.addBullet();
+
+          setTimeout(() => {
+            this.canStrike = true;
+          }, 200);
+        }
+        if (this.canStrike) {
+          this.keyDownInterval = setInterval(this.addBullet, 200);
+        }
+        break;
+
+      default:
+    }
+  }
+
+  keyUpListener(e) {
+    switch (e.keyCode) {
+      case this.keysCode.up:
+        this.onKeyUp(e.keyCode);
+        break;
+
+      case this.keysCode.right:
+        this.onKeyUp(e.keyCode);
+        break;
+
+      case this.keysCode.down:
+        this.onKeyUp(e.keyCode);
+        break;
+
+      case this.keysCode.left:
+        this.onKeyUp(e.keyCode);
+        break;
+
+      case this.keysCode.space:
+        clearInterval(this.keyDownInterval);
+        break;
+
+      default:
+    }
+  }
+
+  addListeners() {
+    window.addEventListener('keydown', this);
+    window.addEventListener('keyup', this);
+  }
+
   init() {
-    const self = this;
-    let keyDownInterval;
-
-    window.addEventListener('keydown', (e) => {
-      switch (e.keyCode) {
-        case self.keysCode.up:
-          self.onKeyDown(e.keyCode);
-          break;
-
-        case self.keysCode.right:
-          self.onKeyDown(e.keyCode);
-          break;
-
-        case self.keysCode.down:
-          self.onKeyDown(e.keyCode);
-          break;
-
-        case self.keysCode.left:
-          self.onKeyDown(e.keyCode);
-          break;
-
-        case self.keysCode.space:
-          if (self.canStrike) {
-            self.canStrike = false;
-            self.addBullet();
-
-            setTimeout(() => {
-              self.canStrike = true;
-            }, 200);
-          }
-          if (self.canStrike) {
-            keyDownInterval = setInterval(self.addBullet, 200);
-          }
-          break;
-
-        default:
-      }
-    });
-
-    window.addEventListener('keyup', (e) => {
-      switch (e.keyCode) {
-        case self.keysCode.up:
-          self.onKeyUp(e.keyCode);
-          break;
-
-        case self.keysCode.right:
-          self.onKeyUp(e.keyCode);
-          break;
-
-        case self.keysCode.down:
-          self.onKeyUp(e.keyCode);
-          break;
-
-        case self.keysCode.left:
-          self.onKeyUp(e.keyCode);
-          break;
-
-        case self.keysCode.space:
-          clearInterval(keyDownInterval);
-          break;
-
-        default:
-      }
-    });
+    this.addListeners();
   }
 }

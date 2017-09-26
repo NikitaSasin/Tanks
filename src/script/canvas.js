@@ -1,5 +1,12 @@
 import config from './config';
 
+import brick from '../img/brick.png';
+import forest from '../img/forest.png';
+import water from '../img/water.png';
+import steel from '../img/steel.png';
+import tank from '../img/tank.png';
+import bullet from '../img/bullet.png';
+
 export default class Canvas {
   constructor() {
     this.canvas = document.getElementById('canvas');
@@ -74,10 +81,11 @@ export default class Canvas {
     const mapSize = config.MAP_SIZE;
     const mapArray = config.MAP_ARRAY;
     const cellType = config.MAP_CELLTYPE;
-    const brick = this.getImage('brick');
-    const water = this.getImage('water');
-    const forest = this.getImage('forest');
-    const steel = this.getImage('steel');
+    const cellName = config.MAP_CELLNAME;
+    const brick = this.getImage(cellName.brick);
+    const water = this.getImage(cellName.water);
+    const forest = this.getImage(cellName.forest);
+    const steel = this.getImage(cellName.steel);
 
     for (let i = 0; i < mapSize; i++) {
       for (let j = 0; j < mapSize; j++) {

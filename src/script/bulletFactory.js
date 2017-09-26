@@ -1,6 +1,6 @@
 import Bullet from './bullet';
 
-export default class bulletFactory {
+export default class BulletFactory {
   constructor() {
     this.bullets = [];
   }
@@ -10,12 +10,10 @@ export default class bulletFactory {
   }
 
   setBulletsPosition(direction, x, y) {
-    const bullets = this.bullets;
-
-    if (bullets.length) {
-      for (let i = 0; i < bullets.length; i++) {
-        if (!bullets[i].setPosition(direction, x, y)) {
-          bullets.splice(i, 1);
+    if (this.bullets.length) {
+      for (let i = 0; i < this.bullets.length; i++) {
+        if (!this.bullets[i].setPosition(direction, x, y)) {
+          this.bullets.splice(i, 1);
           i -= 1;
         }
       }

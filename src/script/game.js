@@ -14,26 +14,26 @@ export default class Game {
   }
 
   init() {
-    const canvas = this.canvas;
-    const tank = this.tank;
-    const keys = this.keys;
-    const bulletFactory = this.bulletFactory;
-    const bullets = bulletFactory.bullets;
-
     setInterval(() => {
-      if (canvas.getProgress() === 100) {
-        canvas.clearMap();
-        canvas.saveContext();
-        canvas.drawMap();
-        tank.setPosition(keys.keysEvent);
-        canvas.drawTank(tank.direction, tank.x, tank.y, tank.width, tank.height);
-        if (bullets.length) {
-          bulletFactory.setBulletsPosition(tank.direction, tank.x, tank.y);
-          bullets.forEach((item) => {
-            canvas.drawBullet(item.direction, item.x, item.y, item.width, item.height);
+      if (this.canvas.getProgress() === 100) {
+        this.canvas.clearMap();
+        this.canvas.saveContext();
+        this.canvas.drawMap();
+        this.tank.setPosition(this.keys.keysEvent);
+        this.canvas.drawTank(
+          this.tank.direction,
+          this.tank.x,
+          this.tank.y,
+          this.tank.width,
+          this.tank.height,
+        );
+        if (this.bulletFactory.bullets.length) {
+          this.bulletFactory.setBulletsPosition(this.tank.direction, this.tank.x, this.tank.y);
+          this.bulletFactory.bullets.forEach((item) => {
+            this.canvas.drawBullet(item.direction, item.x, item.y, item.width, item.height);
           });
         }
-        canvas.restoreContext();
+        this.canvas.restoreContext();
       }
     }, 20);
   }

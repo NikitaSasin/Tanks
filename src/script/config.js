@@ -29,6 +29,12 @@ config.MAP_CELLTYPE = {
   forest: 3,
   steel: 4,
 };
+config.MAP_CELLNAME = {
+  brick: 'brick',
+  water: 'water',
+  forest: 'forest',
+  steel: 'steel',
+};
 config.MAP_SIZE = 20;
 config.MAP_CELLSIZE = 24;
 config.MAP_WIDTH = config.MAP_SIZE * config.MAP_CELLSIZE;
@@ -56,4 +62,4 @@ config.BULLET_WIDTH = 8;
 config.BULLET_HEIGHT = 8;
 config.BULLET_SPEED = 7;
 
-module.exports = config;
+export default config;
